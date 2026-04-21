@@ -179,3 +179,114 @@ section {
     gap: 8px;
   }
 }
+
+@keyframes reserve-radar-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.reserve-radar {
+  animation: reserve-radar-spin 24s linear infinite;
+}
+
+.reserve-scan {
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(232, 0, 28, 0.04) 2px,
+    rgba(232, 0, 28, 0.04) 4px
+  );
+  animation: reserve-scan-move 2.5s linear infinite;
+}
+
+@keyframes reserve-scan-move {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(100%);
+  }
+}
+
+@keyframes reserve-shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.reserve-row-shimmer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), transparent);
+  animation: reserve-shimmer 0.9s ease-out 1;
+  pointer-events: none;
+}
+
+.reserve-confetti::before,
+.reserve-confetti::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle, #e8001c 2px, transparent 2px),
+    radial-gradient(circle, #ffffff 2px, transparent 2px);
+  background-size: 24px 32px;
+  animation: reserve-confetti-fall 8s linear infinite;
+  opacity: 0.35;
+}
+
+.reserve-confetti::after {
+  animation-delay: -4s;
+  opacity: 0.25;
+}
+
+@keyframes reserve-confetti-fall {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(100vh);
+  }
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+}
+
+.arsenal-commander-border {
+  background: linear-gradient(145deg, #15140a 0%, #0d0d12 100%);
+  box-shadow: 0 0 0 1px rgba(255, 215, 0, 0.35);
+  animation: arsenal-gold-shimmer 4s ease-in-out infinite;
+}
+
+@keyframes arsenal-gold-shimmer {
+  0%,
+  100% {
+    box-shadow: 0 0 0 1px rgba(255, 215, 0, 0.35), 0 0 20px rgba(255, 215, 0, 0.08);
+  }
+  50% {
+    box-shadow: 0 0 0 1px rgba(255, 215, 0, 0.65), 0 0 32px rgba(255, 215, 0, 0.18);
+  }
+}
+
+.arsenal-pulse-border {
+  animation: arsenal-banner-pulse 2.5s ease-in-out infinite;
+}
+
+@keyframes arsenal-banner-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(232, 0, 28, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 24px 2px rgba(232, 0, 28, 0.25);
+  }
+}

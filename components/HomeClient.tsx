@@ -18,8 +18,8 @@ const ExperiencesSection = dynamic(
     import("@/components/ExperiencesSection").then((m) => m.ExperiencesSection),
 );
 
-const PackagesSection = dynamic(
-  () => import("@/components/PackagesSection").then((m) => m.PackagesSection),
+const ArsenalSection = dynamic(
+  () => import("@/components/ArsenalSection").then((m) => m.ArsenalSection),
 );
 
 const TournamentSection = dynamic(
@@ -76,7 +76,7 @@ export function HomeClient() {
       <main>
         <HeroSection />
         <ExperiencesSection />
-        <PackagesSection />
+        <ArsenalSection />
         <TournamentSection />
         <GallerySection />
         <TestimonialsSection />

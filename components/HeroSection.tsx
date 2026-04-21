@@ -102,7 +102,7 @@ export function HeroSection() {
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.97 }} className="relative inline-flex">
               <span className="pointer-events-none absolute inset-0 animate-pulse rounded-md bg-brand-red/25 blur-xl" aria-hidden />
               <Link
-                href="#contact"
+                href="/reserve"
                 className="relative inline-flex min-h-[52px] skew-x-[-2deg] items-center justify-center border border-brand-red bg-brand-red px-10 py-4 font-display text-xl uppercase tracking-wide text-white shadow-[0_0_30px_var(--red-glow)] transition hover:shadow-[0_0_36px_var(--red-glow)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-red"
               >
                 <span className="skew-x-[2deg]">{t("hero_cta")} →</span>

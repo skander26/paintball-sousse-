@@ -63,7 +63,7 @@ export function Footer() {
             {[
               ["#home", "nav_home"],
               ["#experiences", "nav_exp"],
-              ["#packages", "nav_pack"],
+              ["#arsenal", "nav_pack"],
               ["#tournament", "nav_tour"],
               ["#gallery", "nav_gal"],
               ["#contact", "nav_contact"],

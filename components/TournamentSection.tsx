@@ -100,7 +100,7 @@ export function TournamentSection() {
 
             <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
               <Link
-                href="#contact"
+                href="/reserve"
                 className="inline-flex min-h-[52px] items-center justify-center bg-brand-red px-10 py-4 font-display text-xl uppercase tracking-widest text-white shadow-glow focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-red"
               >
                 {t("tour_register")} →

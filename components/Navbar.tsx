@@ -11,7 +11,7 @@ import { useI18n } from "@/lib/i18n";
 const NAV = [
   { href: "#home", key: "nav_home" as const },
   { href: "#experiences", key: "nav_exp" as const },
-  { href: "#packages", key: "nav_pack" as const },
+  { href: "#arsenal", key: "nav_pack" as const },
   { href: "#tournament", key: "nav_tour" as const },
   { href: "#gallery", key: "nav_gal" as const },
   { href: "#contact", key: "nav_contact" as const },
@@ -90,14 +90,14 @@ export function Navbar() {
                 </button>
               ))}
             </div>
-            <motion.a
-              href="#contact"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.97 }}
-              className="skew-x-[-2deg] bg-brand-red px-6 py-3 font-display text-sm uppercase tracking-wider text-white shadow-glow transition hover:shadow-[0_0_36px_var(--red-glow)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-red"
-            >
-              <span className="skew-x-[2deg] inline-block">{t("nav_book")}</span>
-            </motion.a>
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.97 }}>
+              <Link
+                href="/reserve"
+                className="skew-x-[-2deg] inline-block bg-brand-red px-6 py-3 font-display text-sm uppercase tracking-wider text-white shadow-glow transition hover:shadow-[0_0_36px_var(--red-glow)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-red"
+              >
+                <span className="skew-x-[2deg] inline-block">{t("nav_book")}</span>
+              </Link>
+            </motion.div>
           </div>
 
           <div className="flex items-center gap-3 lg:hidden">
@@ -158,17 +158,20 @@ export function Navbar() {
                   </Link>
                 </motion.div>
               ))}
-              <motion.a
-                href="#contact"
+              <motion.div
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0 }}
                 transition={{ delay: 0.35 }}
-                onClick={() => setOpen(false)}
-                className="mt-8 inline-flex min-h-[48px] items-center justify-center bg-brand-red px-6 py-3 font-display text-xl uppercase tracking-widest text-white"
               >
-                {t("nav_book")}
-              </motion.a>
+                <Link
+                  href="/reserve"
+                  onClick={() => setOpen(false)}
+                  className="mt-8 inline-flex min-h-[48px] items-center justify-center bg-brand-red px-6 py-3 font-display text-xl uppercase tracking-widest text-white"
+                >
+                  {t("nav_book")}
+                </Link>
+              </motion.div>
             </div>
           </motion.div>
         )}
