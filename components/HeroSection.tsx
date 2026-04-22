@@ -1,63 +1,24 @@
 "use client";
 
 import { motion, useScroll, useTransform } from "framer-motion";
-import dynamic from "next/dynamic";
 import Link from "next/link";
-import { MessageCircle } from "lucide-react";
-import { useEffect, useState } from "react";
+import { ICONS } from "@/icons";
+import { PBIcon } from "@/components/ui/PBIcon";
 import { HeroCharacterSlot } from "@/components/HeroCharacterImage";
 import { PHONE_DISPLAY, WHATSAPP_URL } from "@/lib/constants";
 import { useI18n } from "@/lib/i18n";
 
-const PaintballCanvas = dynamic(
-  () =>
-    import("@/components/3d/PaintballCanvas").then((m) => m.PaintballCanvas),
-  { ssr: false },
-);
-
 export function HeroSection() {
   const { t } = useI18n();
-  const [mobile, setMobile] = useState(false);
 
   const { scrollY } = useScroll();
   const chevronOpacity = useTransform(scrollY, [0, 120], [1, 0]);
 
-  useEffect(() => {
-    const mq = window.matchMedia("(max-width: 1023px)");
-    const upd = () => setMobile(mq.matches);
-    upd();
-    mq.addEventListener("change", upd);
-    return () => mq.removeEventListener("change", upd);
-  }, []);
-
-  useEffect(() => {
-    const checkCanvasParent = () => {
-      const el = document.querySelector("[data-hero-canvas]");
-      if (!el || !(el instanceof HTMLElement)) return;
-      const rect = el.getBoundingClientRect();
-      if (rect.width === 0 || rect.height === 0) {
-        el.style.width = "100%";
-        el.style.minHeight = "100vh";
-      }
-    };
-    checkCanvasParent();
-    window.addEventListener("resize", checkCanvasParent);
-    return () => window.removeEventListener("resize", checkCanvasParent);
-  }, []);
-
   return (
     <section
       id="home"
-      className="hero-section flex min-h-[100dvh] flex-col justify-center bg-[#050507] px-4 pb-10 pt-[calc(var(--navbar-height)+16px)] md:px-12 lg:pb-24 lg:pt-28"
+      className="hero-section relative flex min-h-[100dvh] flex-col justify-center bg-transparent px-4 pb-10 pt-[calc(var(--navbar-height)+16px)] md:px-12 lg:pb-24 lg:pt-28"
     >
-      <div
-        data-hero-canvas
-        data-mobile-visible
-        className="pointer-events-none absolute inset-0 z-0 min-h-full w-full overflow-hidden"
-      >
-        <PaintballCanvas mobile={mobile} />
-      </div>
-
       <div className="relative z-[2] mx-auto grid w-full max-w-7xl gap-8 lg:grid-cols-[minmax(0,55%)_minmax(0,45%)] lg:items-center lg:gap-10">
         <div className="flex min-w-0 flex-col">
           <motion.div
@@ -102,7 +63,7 @@ export function HeroSection() {
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.97 }} className="relative inline-flex">
               <span className="pointer-events-none absolute inset-0 animate-pulse rounded-md bg-brand-red/25 blur-xl" aria-hidden />
               <Link
-                href="#contact"
+                href="/reserve"
                 className="relative inline-flex min-h-[52px] skew-x-[-2deg] items-center justify-center border border-brand-red bg-brand-red px-10 py-4 font-display text-xl uppercase tracking-wide text-white shadow-[0_0_30px_var(--red-glow)] transition hover:shadow-[0_0_36px_var(--red-glow)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-red"
               >
                 <span className="skew-x-[2deg]">{t("hero_cta")} →</span>
@@ -114,7 +75,7 @@ export function HeroSection() {
               rel="noopener noreferrer"
               className="inline-flex min-h-[44px] items-center gap-2 font-body text-base text-white/85 transition hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-red"
             >
-              <MessageCircle className="h-5 w-5 text-green-400" aria-hidden />
+              <PBIcon icon={ICONS.whatsapp} size={20} color="#4ade80" aria-hidden />
               <span>
                 {t("hero_call")}{" "}
                 <strong className="text-white">{PHONE_DISPLAY}</strong>

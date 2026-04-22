@@ -37,7 +37,7 @@ export function TestimonialsSection() {
   }, []);
 
   return (
-    <section className="bg-surface px-4 py-24 md:px-10">
+    <section className="bg-transparent px-4 py-24 md:px-10">
       <div className="mx-auto max-w-4xl text-center">
         <h2 className="mb-12 font-display text-5xl tracking-[0.14em] text-white md:text-6xl">
           {t("testi_title")}
@@ -51,7 +51,7 @@ export function TestimonialsSection() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -14 }}
               transition={{ duration: 0.35 }}
-              className="rounded-3xl border border-white/10 bg-black-card/80 p-10 shadow-card backdrop-blur-xl"
+              className="rounded-3xl border border-white/10 bg-[rgba(13,13,18,0.85)] p-10 shadow-card backdrop-blur-xl"
             >
               <div className="mx-auto mb-8 flex justify-center gap-2" aria-hidden>
                 {Array.from({ length: 5 }).map((_, k) => (

@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Providers } from "@/components/providers";
+import { ParticleBackground } from "@/components/ui/ParticleBackground";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -56,9 +57,12 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body className="min-h-dvh overflow-x-hidden">
-        <div className="grain-overlay" aria-hidden />
-        <Providers>{children}</Providers>
+      <body className="relative min-h-dvh overflow-x-hidden bg-[#050507]">
+        <ParticleBackground />
+        <div className="relative z-[1] min-h-dvh">
+          <div className="grain-overlay" aria-hidden />
+          <Providers>{children}</Providers>
+        </div>
       </body>
     </html>
   );

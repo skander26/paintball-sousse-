@@ -2,6 +2,7 @@
 
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { LoadingGun } from "@/components/LoadingGun";
 import { useI18n } from "@/lib/i18n";
 import gsap from "gsap";
 
@@ -148,47 +149,9 @@ export function LoadingScreen({ onDone }: LoadingScreenProps) {
           </AnimatePresence>
 
           <div className="relative z-[2] flex flex-col items-center px-4">
-            <p className="mb-6 font-mono text-xs tracking-[0.5em] text-brand-red">
-              {t("loading")}
-            </p>
-
-            <svg
-              viewBox="0 0 320 200"
-              className="mb-6 h-36 w-64 max-w-[85vw] md:h-40 md:w-72"
-              aria-hidden
-            >
-              <defs>
-                <linearGradient id="mag" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stopColor="#E8001C" />
-                  <stop offset="100%" stopColor="#ff2d44" />
-                </linearGradient>
-              </defs>
-              <rect x="40" y="72" width="240" height="56" rx="10" fill="#12121a" stroke="#2a2a38" />
-              <rect
-                x="44"
-                y="76"
-                width={(232 * progress) / 100}
-                height="48"
-                rx="8"
-                fill="url(#mag)"
-              />
-              <rect x="24" y="96" width="140" height="28" rx="6" fill="#222" />
-              <rect x="220" y="84" width="72" height="44" rx="8" fill="#333" />
-              <rect x="286" y="92" width="34" height="12" rx="4" fill="#444" />
-              <motion.g
-                animate={{ rotate: 360 }}
-                transition={{
-                  duration: 10,
-                  repeat: Infinity,
-                  ease: "linear",
-                }}
-                style={{ transformOrigin: "160px 100px" }}
-              >
-                <circle cx="160" cy="48" r="46" fill="none" stroke="#E8001C44" strokeWidth="2" />
-                <line x1="160" y1="14" x2="160" y2="82" stroke="#E8001C" strokeWidth="2" />
-                <line x1="126" y1="48" x2="194" y2="48" stroke="#E8001C" strokeWidth="2" />
-              </motion.g>
-            </svg>
+            <div className="mb-6">
+              <LoadingGun progress={progress} />
+            </div>
 
             <motion.div
               className="mb-10 h-10 w-2 rounded-full bg-brand-red/80"

@@ -2,7 +2,8 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
-import { ChevronLeft, ChevronRight, X } from "lucide-react";
+import { ICONS } from "@/icons";
+import { PBIcon } from "@/components/ui/PBIcon";
 import { useCallback, useEffect, useState } from "react";
 import {
   GALLERY_IMAGE_FALLBACK,
@@ -47,7 +48,7 @@ export function GallerySection() {
   return (
     <section
       id="gallery"
-      className="section-padding bg-black-deep"
+      className="section-padding bg-transparent"
       style={{ paddingTop: "clamp(60px, 10vw, 100px)", paddingBottom: "clamp(60px, 10vw, 100px)" }}
     >
       <div className="section-title-block mx-auto max-w-7xl px-4">
@@ -126,41 +127,41 @@ export function GallerySection() {
           >
             <button
               type="button"
-              className="absolute right-6 top-6 inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-full bg-brand-red/80 text-white transition hover:bg-brand-red"
+              className="absolute right-4 top-4 inline-flex min-h-[48px] min-w-[48px] items-center justify-center rounded-full bg-brand-red/80 text-white transition hover:bg-brand-red md:right-6 md:top-6"
               onClick={(e) => {
                 e.stopPropagation();
                 close();
               }}
               aria-label="Fermer"
             >
-              <X className="h-6 w-6" />
+              <PBIcon icon={ICONS.close} size={24} />
             </button>
 
             {lightboxIndex > 0 && (
               <button
                 type="button"
-                className="absolute left-4 top-1/2 z-[1] inline-flex min-h-[44px] min-w-[44px] -translate-y-1/2 items-center justify-center rounded-full bg-white/10 text-white md:left-10"
+                className="fixed bottom-6 left-6 z-[1] inline-flex min-h-[56px] min-w-[56px] items-center justify-center rounded-full bg-white/10 text-white md:absolute md:bottom-auto md:left-10 md:top-1/2 md:-translate-y-1/2"
                 onClick={(e) => {
                   e.stopPropagation();
                   prev();
                 }}
                 aria-label="Précédent"
               >
-                <ChevronLeft className="h-6 w-6" />
+                <PBIcon icon={ICONS.chevronLeft} size={28} />
               </button>
             )}
 
             {lightboxIndex < galleryImages.length - 1 && (
               <button
                 type="button"
-                className="absolute right-4 top-1/2 z-[1] inline-flex min-h-[44px] min-w-[44px] -translate-y-1/2 items-center justify-center rounded-full bg-white/10 text-white md:right-10"
+                className="fixed bottom-6 right-6 z-[1] inline-flex min-h-[56px] min-w-[56px] items-center justify-center rounded-full bg-white/10 text-white md:absolute md:bottom-auto md:right-10 md:top-1/2 md:-translate-y-1/2"
                 onClick={(e) => {
                   e.stopPropagation();
                   next();
                 }}
                 aria-label="Suivant"
               >
-                <ChevronRight className="h-6 w-6" />
+                <PBIcon icon={ICONS.chevronRight} size={28} />
               </button>
             )}
 
@@ -168,7 +169,7 @@ export function GallerySection() {
               initial={{ scale: 0.94, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.94, opacity: 0 }}
-              className="relative max-h-[85vh] max-w-[90vw]"
+              className="relative max-h-[75vh] max-w-[95vw] md:max-h-[85vh] md:max-w-[90vw]"
               onClick={(e) => e.stopPropagation()}
             >
               <Image

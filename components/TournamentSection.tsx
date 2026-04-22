@@ -3,7 +3,8 @@
 import { motion } from "framer-motion";
 import dynamic from "next/dynamic";
 import Link from "next/link";
-import { Trophy } from "lucide-react";
+import { ICONS } from "@/icons";
+import { PBIcon } from "@/components/ui/PBIcon";
 import { useEffect, useMemo, useState } from "react";
 import { TOURNAMENT_END } from "@/lib/constants";
 import { useI18n } from "@/lib/i18n";
@@ -56,14 +57,14 @@ export function TournamentSection() {
   return (
     <section
       id="tournament"
-      className="relative overflow-hidden bg-[#07070c] px-4 py-24 md:px-10"
+      className="relative overflow-hidden bg-transparent px-4 py-24 md:px-10"
     >
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0"
         style={{
           background:
-            "radial-gradient(900px 420px at 50% -10%, rgba(232,0,28,0.35), transparent 60%)",
+            "radial-gradient(900px 420px at 50% -10%, rgba(232,0,28,0.18), transparent 60%)",
         }}
       />
 
@@ -100,7 +101,7 @@ export function TournamentSection() {
 
             <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
               <Link
-                href="#contact"
+                href="/reserve"
                 className="inline-flex min-h-[52px] items-center justify-center bg-brand-red px-10 py-4 font-display text-xl uppercase tracking-widest text-white shadow-glow focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-red"
               >
                 {t("tour_register")} →
@@ -112,7 +113,13 @@ export function TournamentSection() {
         </div>
 
         <div className="relative flex flex-col items-center gap-8">
-          <Trophy className="h-14 w-14 text-[var(--gold-accent)] drop-shadow-[0_0_24px_rgba(255,215,0,0.35)]" aria-hidden />
+          <PBIcon
+            icon={ICONS.trophy}
+            size={56}
+            color="var(--gold-accent)"
+            className="drop-shadow-[0_0_24px_rgba(255,215,0,0.35)]"
+            aria-hidden
+          />
 
           <div className="grid w-full max-w-xl grid-cols-2 gap-4 md:grid-cols-4">
             {units.map((u) => (
@@ -120,7 +127,7 @@ export function TournamentSection() {
                 key={u.label}
                 animate={{ scale: [1, 1.03, 1] }}
                 transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
-                className="rounded-2xl border border-white/10 bg-black-card/90 px-4 py-6 text-center shadow-card"
+                className="rounded-2xl border border-white/10 bg-[rgba(13,13,18,0.9)] px-4 py-6 text-center shadow-card backdrop-blur-md"
               >
                 <p className="font-mono text-4xl text-brand-red md:text-5xl">
                   {String(u.value).padStart(2, "0")}

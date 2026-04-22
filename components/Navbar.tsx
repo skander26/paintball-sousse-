@@ -4,14 +4,16 @@ import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { DURATION_NORMAL_S } from "@/lib/constants";
+import { PBIcon } from "@/components/ui/PBIcon";
+import { DURATION_NORMAL_S, FACEBOOK_URL, INSTAGRAM_URL } from "@/lib/constants";
+import { ICONS } from "@/icons";
 import type { Locale } from "@/lib/i18n";
 import { useI18n } from "@/lib/i18n";
 
 const NAV = [
   { href: "#home", key: "nav_home" as const },
   { href: "#experiences", key: "nav_exp" as const },
-  { href: "#packages", key: "nav_pack" as const },
+  { href: "#arsenal", key: "nav_pack" as const },
   { href: "#tournament", key: "nav_tour" as const },
   { href: "#gallery", key: "nav_gal" as const },
   { href: "#contact", key: "nav_contact" as const },
@@ -57,7 +59,7 @@ export function Navbar() {
             aria-label={t("brand")}
           >
             <Image src="/logo.svg" alt="" width={44} height={44} priority />
-            <span className="font-display text-xl tracking-[0.18em] text-white md:text-2xl">
+            <span className="hidden min-[400px]:inline font-display text-xl tracking-[0.18em] text-white md:text-2xl">
               {t("brand")}
             </span>
           </Link>
@@ -90,17 +92,25 @@ export function Navbar() {
                 </button>
               ))}
             </div>
-            <motion.a
-              href="#contact"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.97 }}
-              className="skew-x-[-2deg] bg-brand-red px-6 py-3 font-display text-sm uppercase tracking-wider text-white shadow-glow transition hover:shadow-[0_0_36px_var(--red-glow)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-red"
-            >
-              <span className="skew-x-[2deg] inline-block">{t("nav_book")}</span>
-            </motion.a>
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.97 }}>
+              <Link
+                href="/reserve"
+                className="skew-x-[-2deg] inline-block bg-brand-red px-6 py-3 font-display text-sm uppercase tracking-wider text-white shadow-glow transition hover:shadow-[0_0_36px_var(--red-glow)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-red"
+              >
+                <span className="skew-x-[2deg] inline-block">{t("nav_book")}</span>
+              </Link>
+            </motion.div>
           </div>
 
-          <div className="flex items-center gap-3 lg:hidden">
+          <div className="flex items-center gap-2 lg:hidden">
+            <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.98 }}>
+              <Link
+                href="/reserve"
+                className="skew-x-[-2deg] inline-block bg-brand-red px-4 py-2 font-display text-xs uppercase tracking-wider text-white shadow-glow focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-red"
+              >
+                <span className="skew-x-[2deg] inline-block">{t("nav_book")}</span>
+              </Link>
+            </motion.div>
             <button
               type="button"
               onClick={() => cycleLocale(locale)}
@@ -111,13 +121,13 @@ export function Navbar() {
             </button>
             <button
               type="button"
-              className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-full border border-white/15 text-white"
+              className="flex min-h-[48px] min-w-[48px] items-center justify-center rounded-full border border-white/15 text-white"
               aria-label={open ? "Close menu" : "Open menu"}
               aria-expanded={open}
               onClick={() => setOpen((v) => !v)}
             >
               <span className="sr-only">Menu</span>
-              {open ? "✕" : "☰"}
+              <PBIcon icon={open ? ICONS.close : ICONS.menu} size={22} />
             </button>
           </div>
         </nav>
@@ -130,8 +140,16 @@ export function Navbar() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[1001] bg-black/95 lg:hidden"
+            className="fixed inset-0 z-[9999] bg-[rgba(5,5,7,0.98)] backdrop-blur-[20px] lg:hidden"
           >
+            <button
+              type="button"
+              className="absolute right-4 top-4 z-10 flex min-h-[48px] min-w-[48px] items-center justify-center rounded-full border border-white/15 text-white transition hover:bg-white/10"
+              aria-label="Close menu"
+              onClick={() => setOpen(false)}
+            >
+              <PBIcon icon={ICONS.close} size={22} />
+            </button>
             <div
               className="absolute inset-0 opacity-30"
               style={{
@@ -140,35 +158,64 @@ export function Navbar() {
               }}
               aria-hidden
             />
-            <div className="relative flex h-full flex-col justify-center px-8">
+            <div className="relative flex h-full flex-col justify-center px-8 pb-24">
               {NAV.map((item, i) => (
                 <motion.div
                   key={item.key}
                   initial={{ x: -40, opacity: 0 }}
                   animate={{ x: 0, opacity: 1 }}
                   exit={{ x: -40, opacity: 0 }}
-                  transition={{ delay: i * 0.08 }}
+                  transition={{ delay: i * 0.1 }}
                 >
                   <Link
                     href={item.href}
                     onClick={() => setOpen(false)}
-                    className="block py-4 font-display text-3xl tracking-[0.16em] text-white"
+                    className="block py-3 font-display text-[clamp(1.75rem,8vw,3.5rem)] leading-tight tracking-[0.12em] text-white"
                   >
                     {t(item.key)}
                   </Link>
                 </motion.div>
               ))}
-              <motion.a
-                href="#contact"
+              <motion.div
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0 }}
                 transition={{ delay: 0.35 }}
-                onClick={() => setOpen(false)}
-                className="mt-8 inline-flex min-h-[48px] items-center justify-center bg-brand-red px-6 py-3 font-display text-xl uppercase tracking-widest text-white"
+                className="mt-8"
               >
-                {t("nav_book")}
-              </motion.a>
+                <Link
+                  href="/reserve"
+                  onClick={() => setOpen(false)}
+                  className="inline-flex min-h-[52px] items-center justify-center bg-brand-red px-6 py-3 font-display text-lg uppercase tracking-widest text-white"
+                >
+                  {t("nav_book")}
+                </Link>
+              </motion.div>
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.5 }}
+                className="absolute bottom-10 left-0 right-0 flex justify-center gap-6"
+              >
+                <a
+                  href={INSTAGRAM_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex min-h-[48px] min-w-[48px] items-center justify-center rounded-full border border-white/15 text-white transition hover:border-brand-red"
+                  aria-label="Instagram"
+                >
+                  <PBIcon icon={ICONS.instagram} size={22} />
+                </a>
+                <a
+                  href={FACEBOOK_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex min-h-[48px] min-w-[48px] items-center justify-center rounded-full border border-white/15 text-white transition hover:border-brand-red"
+                  aria-label="Facebook"
+                >
+                  <PBIcon icon={ICONS.facebook} size={22} />
+                </a>
+              </motion.div>
             </div>
           </motion.div>
         )}

@@ -2,7 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Facebook, Instagram } from "lucide-react";
+import { ICONS } from "@/icons";
+import { PBIcon } from "@/components/ui/PBIcon";
 import {
   EMAIL,
   FACEBOOK_URL,
@@ -15,7 +16,7 @@ export function Footer() {
   const { t } = useI18n();
 
   return (
-    <footer className="relative overflow-hidden bg-[#050507] px-4 py-16 md:px-10">
+    <footer className="relative overflow-hidden border-t border-[rgba(232,0,28,0.2)] bg-[rgba(5,5,7,0.95)] px-4 py-16 backdrop-blur-sm md:px-10">
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 footer-sweep opacity-40"
@@ -43,7 +44,7 @@ export function Footer() {
               aria-label="Instagram"
               className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-full border border-white/10 text-white transition hover:border-brand-red hover:text-brand-red"
             >
-              <Instagram className="h-5 w-5" />
+              <PBIcon icon={ICONS.instagram} size={20} />
             </a>
             <a
               href={FACEBOOK_URL}
@@ -52,7 +53,7 @@ export function Footer() {
               aria-label="Facebook"
               className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-full border border-white/10 text-white transition hover:border-brand-red hover:text-brand-red"
             >
-              <Facebook className="h-5 w-5" />
+              <PBIcon icon={ICONS.facebook} size={20} />
             </a>
           </div>
         </div>
@@ -63,7 +64,7 @@ export function Footer() {
             {[
               ["#home", "nav_home"],
               ["#experiences", "nav_exp"],
-              ["#packages", "nav_pack"],
+              ["#arsenal", "nav_pack"],
               ["#tournament", "nav_tour"],
               ["#gallery", "nav_gal"],
               ["#contact", "nav_contact"],

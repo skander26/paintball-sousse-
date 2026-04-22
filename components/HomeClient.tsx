@@ -10,7 +10,7 @@ import { WhatsAppFloat } from "@/components/WhatsAppFloat";
 
 const HeroSection = dynamic(
   () => import("@/components/HeroSection").then((m) => m.HeroSection),
-  { loading: () => <div className="min-h-[100dvh] bg-black-deep" /> },
+  { loading: () => <div className="min-h-[100dvh] bg-transparent" /> },
 );
 
 const ExperiencesSection = dynamic(
@@ -18,8 +18,8 @@ const ExperiencesSection = dynamic(
     import("@/components/ExperiencesSection").then((m) => m.ExperiencesSection),
 );
 
-const PackagesSection = dynamic(
-  () => import("@/components/PackagesSection").then((m) => m.PackagesSection),
+const ArsenalSection = dynamic(
+  () => import("@/components/ArsenalSection").then((m) => m.ArsenalSection),
 );
 
 const TournamentSection = dynamic(
@@ -76,7 +76,7 @@ export function HomeClient() {
       <main>
         <HeroSection />
         <ExperiencesSection />
-        <PackagesSection />
+        <ArsenalSection />
         <TournamentSection />
         <GallerySection />
         <TestimonialsSection />

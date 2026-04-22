@@ -47,7 +47,7 @@ export function ExperiencesSection() {
   return (
     <section
       id="experiences"
-      className="relative overflow-hidden bg-surface px-4 py-24 md:px-10"
+      className="relative overflow-hidden bg-transparent px-4 py-24 md:px-10"
     >
       <motion.div
         aria-hidden
