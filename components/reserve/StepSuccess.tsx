@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { useReservationStore } from "@/store/reservationStore";
@@ -83,6 +84,8 @@ function downloadIcs() {
 }
 
 export function StepSuccess() {
+  const router = useRouter();
+  const reset = useReservationStore((s) => s.reset);
   const [showSplat, setShowSplat] = useState(true);
   const selectedDate = useReservationStore((s) => s.selectedDate);
   const selectedTime = useReservationStore((s) => s.selectedTime);
@@ -171,6 +174,11 @@ export function StepSuccess() {
           <Link
             href="/"
             className="block w-full rounded-xl py-3 font-body text-white/80 underline underline-offset-4"
+            onClick={(e) => {
+              e.preventDefault();
+              reset();
+              router.push("/");
+            }}
           >
             ← BACK TO HOME
           </Link>

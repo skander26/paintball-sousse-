@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { HelpCircle } from "lucide-react";
+import { ICONS } from "@/icons";
+import { PBIcon } from "@/components/ui/PBIcon";
 import { useCallback, useRef, useState } from "react";
 import {
   ARSENAL_PACKAGES,
@@ -30,7 +31,7 @@ function PackageTooltip({ row }: { row: ArsenalPackageRow }) {
         onFocus={() => setOpen(true)}
         onBlur={() => setOpen(false)}
       >
-        <HelpCircle className="h-4 w-4" />
+        <PBIcon icon={ICONS.help} size={16} className="text-white/60" />
       </button>
       <AnimatePresence>
         {open && (

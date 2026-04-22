@@ -3,7 +3,8 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import dynamic from "next/dynamic";
-import { Facebook, Instagram, Mail, Phone } from "lucide-react";
+import { ICONS } from "@/icons";
+import { PBIcon } from "@/components/ui/PBIcon";
 import {
   EMAIL,
   FACEBOOK_URL,
@@ -15,7 +16,12 @@ import { useI18n } from "@/lib/i18n";
 
 const ContactMap = dynamic(
   () => import("@/components/ContactMap").then((m) => m.ContactMap),
-  { ssr: false, loading: () => <div className="h-[400px] animate-pulse rounded-xl bg-white/5" /> },
+  {
+    ssr: false,
+    loading: () => (
+      <div className="h-[250px] animate-pulse rounded-xl bg-white/5 md:h-[400px]" />
+    ),
+  },
 );
 
 export function ContactSection() {
@@ -31,21 +37,21 @@ export function ContactSection() {
           transition={{ duration: 0.55 }}
           className="rounded-3xl border border-white/10 bg-black-card/70 p-8 shadow-card backdrop-blur-xl md:p-10"
         >
-          <h2 className="font-display text-4xl tracking-[0.12em] text-white md:text-5xl">FIND US & REACH OUT</h2>
+          <h2 className="font-display text-4xl tracking-[0.12em] text-white md:text-5xl">
+            {t("contact_reach_title")}
+          </h2>
 
           <div className="mt-8 space-y-6 font-body text-lg text-white/90">
             <p>
-              <span className="text-brand-red">📍</span> Near Mall of Sousse,
-              <br />
-              Route Sidi Bou Ali, Kalaa Kebira
+              <span className="text-brand-red">📍</span> {t("contact_address_block")}
             </p>
             <div className="flex flex-wrap gap-3">
               <a
                 href={`tel:${PHONE_DISPLAY.replace(/\s/g, "")}`}
                 className="inline-flex min-h-[48px] items-center justify-center rounded-xl bg-brand-red px-6 py-3 font-display text-sm uppercase tracking-wider text-white shadow-glow"
               >
-                <Phone className="me-2 h-4 w-4" aria-hidden />
-                Call
+                <PBIcon icon={ICONS.phone} size={18} className="me-2" aria-hidden />
+                {t("contact_call_btn")}
               </a>
               <a
                 href={WHATSAPP_URL}
@@ -53,7 +59,7 @@ export function ContactSection() {
                 rel="noopener noreferrer"
                 className="inline-flex min-h-[48px] items-center justify-center rounded-xl border border-green-500/50 bg-green-600/15 px-6 py-3 font-body font-semibold text-green-300"
               >
-                WhatsApp
+                {t("contact_wa_btn")}
               </a>
             </div>
             <p>
@@ -83,13 +89,13 @@ export function ContactSection() {
           </div>
 
           <div className="mt-10 rounded-2xl border border-brand-red bg-[rgba(232,0,28,0.06)] p-6 shadow-[0_0_20px_rgba(232,0,28,0.15)]">
-            <p className="font-display text-2xl text-white">🎯 WANT TO BOOK?</p>
-            <p className="mt-2 font-body text-muted">Head to our tactical reservation system.</p>
+            <p className="font-display text-2xl text-white">🎯 {t("contact_book_title")}</p>
+            <p className="mt-2 font-body text-muted">{t("contact_book_sub")}</p>
             <Link
               href="/reserve"
               className="mt-6 flex min-h-[52px] w-full items-center justify-center bg-brand-red font-display text-xl uppercase tracking-wider text-white shadow-glow"
             >
-              ENTER THE ARENA →
+              {t("contact_enter_cta")} →
             </Link>
           </div>
         </motion.div>
@@ -104,11 +110,11 @@ export function ContactSection() {
           <div>
             <h3 className="font-display text-4xl tracking-[0.16em] text-white">{t("contact_find")}</h3>
             <p className="mt-4 max-w-lg font-body text-lg leading-relaxed text-muted">
-              Near Mall of Sousse, Route Sidi Bou Ali, Kalaa Kebira, Sousse
+              {t("contact_map_intro")}
             </p>
           </div>
 
-          <div className="h-[400px] overflow-hidden rounded-2xl border border-white/10">
+          <div className="h-[250px] overflow-hidden rounded-2xl border border-white/10 md:h-[400px]">
             <ContactMap />
           </div>
 
@@ -117,7 +123,7 @@ export function ContactSection() {
               href={`mailto:${EMAIL}`}
               className="flex min-h-[52px] items-center gap-3 rounded-2xl border border-white/10 bg-black-card/70 px-4 py-3 font-body text-white transition hover:border-brand-red/60"
             >
-              <Mail className="h-5 w-5 text-brand-red" aria-hidden />
+              <PBIcon icon={ICONS.email} size={20} color="#E8001C" aria-hidden />
               {EMAIL}
             </a>
             <a
@@ -126,7 +132,7 @@ export function ContactSection() {
               rel="noopener noreferrer"
               className="flex min-h-[52px] items-center gap-3 rounded-2xl border border-white/10 bg-black-card/70 px-4 py-3 font-body text-white transition hover:border-brand-red/60"
             >
-              <Instagram className="h-5 w-5 text-brand-red" aria-hidden />
+              <PBIcon icon={ICONS.instagram} size={20} color="#E8001C" aria-hidden />
               @paintball_sousse
             </a>
             <a
@@ -135,7 +141,7 @@ export function ContactSection() {
               rel="noopener noreferrer"
               className="flex min-h-[52px] items-center gap-3 rounded-2xl border border-white/10 bg-black-card/70 px-4 py-3 font-body text-white transition hover:border-brand-red/60 sm:col-span-2"
             >
-              <Facebook className="h-5 w-5 text-brand-red" aria-hidden />
+              <PBIcon icon={ICONS.facebook} size={20} color="#E8001C" aria-hidden />
               Paintball Sousse
             </a>
           </div>
@@ -146,7 +152,7 @@ export function ContactSection() {
             rel="noopener noreferrer"
             className="inline-flex min-h-[52px] w-full items-center justify-center rounded-2xl border border-green-500/40 bg-green-600/15 px-6 py-4 font-body font-semibold text-green-300 transition hover:bg-green-600/25 sm:w-auto"
           >
-            WhatsApp — contact rapide
+            {t("contact_wa_quick")}
           </a>
         </motion.div>
       </div>

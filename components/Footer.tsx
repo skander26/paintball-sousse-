@@ -2,7 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Facebook, Instagram } from "lucide-react";
+import { ICONS } from "@/icons";
+import { PBIcon } from "@/components/ui/PBIcon";
 import {
   EMAIL,
   FACEBOOK_URL,
@@ -43,7 +44,7 @@ export function Footer() {
               aria-label="Instagram"
               className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-full border border-white/10 text-white transition hover:border-brand-red hover:text-brand-red"
             >
-              <Instagram className="h-5 w-5" />
+              <PBIcon icon={ICONS.instagram} size={20} />
             </a>
             <a
               href={FACEBOOK_URL}
@@ -52,7 +53,7 @@ export function Footer() {
               aria-label="Facebook"
               className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-full border border-white/10 text-white transition hover:border-brand-red hover:text-brand-red"
             >
-              <Facebook className="h-5 w-5" />
+              <PBIcon icon={ICONS.facebook} size={20} />
             </a>
           </div>
         </div>

@@ -1,0 +1,26 @@
+/** Registre central d’icônes Iconify — thème tactique / gaming */
+export const ICONS = {
+  menu: "ph:list-bold",
+  close: "ph:x-bold",
+  arrowRight: "ph:arrow-right-bold",
+  arrowLeft: "ph:arrow-left-bold",
+  arrowDown: "ph:arrow-down-bold",
+  chevronDown: "ph:caret-down-bold",
+  chevronLeft: "ph:caret-left-bold",
+  chevronRight: "ph:caret-right-bold",
+  home: "game-icons:house",
+  phone: "solar:phone-calling-bold",
+  whatsapp: "mdi:whatsapp",
+  email: "solar:letter-bold",
+  instagram: "mdi:instagram",
+  facebook: "mdi:facebook",
+  location: "solar:map-point-bold",
+  target: "game-icons:target-arrows",
+  crosshair: "game-icons:crosshair",
+  trophy: "game-icons:trophy",
+  help: "solar:info-circle-bold",
+  volumeOn: "solar:volume-loud-bold",
+  volumeOff: "solar:volume-cross-bold",
+  message: "mdi:message-outline",
+} as const;
+

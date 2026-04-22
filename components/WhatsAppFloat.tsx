@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { MessageCircle } from "lucide-react";
+import { ICONS } from "@/icons";
+import { PBIcon } from "@/components/ui/PBIcon";
 import { WHATSAPP_URL } from "@/lib/constants";
 import { useI18n } from "@/lib/i18n";
 
@@ -20,7 +21,7 @@ export function WhatsAppFloat() {
         aria-label={t("wa_tooltip")}
         className="inline-flex h-14 w-14 min-h-[56px] min-w-[56px] items-center justify-center rounded-full bg-green-600 text-white shadow-[0_12px_40px_rgba(22,163,74,0.45)] transition hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-400"
       >
-        <MessageCircle className="h-7 w-7" aria-hidden />
+        <PBIcon icon={ICONS.whatsapp} size={28} aria-hidden />
       </Link>
     </div>
   );

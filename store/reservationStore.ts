@@ -228,6 +228,8 @@ export const useReservationStore = create<ReservationState>((set, get) => ({
   reset: () =>
     set({
       ...initial,
+      introComplete: true,
+      introSkipped: true,
       players: buildPlayers(6),
       gameModeId: null,
       preselectedClassId: null,

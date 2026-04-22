@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { useReservationStore } from "@/store/reservationStore";
 
@@ -12,6 +13,8 @@ const LABELS: Record<number, string> = {
 };
 
 export function ReserveTopBar() {
+  const router = useRouter();
+  const reset = useReservationStore((s) => s.reset);
   const step = useReservationStore((s) => s.step);
 
   const pct = (step / 4) * 100;
@@ -23,6 +26,12 @@ export function ReserveTopBar() {
           <Link
             href="/"
             className="font-body text-xs uppercase tracking-wider text-white/70 transition hover:text-white"
+            onClick={(e) => {
+              if (step !== 4) return;
+              e.preventDefault();
+              reset();
+              router.push("/");
+            }}
           >
             ← EXIT MISSION
           </Link>

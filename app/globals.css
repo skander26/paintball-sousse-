@@ -25,12 +25,30 @@
 html {
   scroll-behavior: smooth;
   overflow-x: hidden;
+  width: 100%;
+  max-width: 100vw;
 }
 
 body {
   @apply bg-surface-deep text-white antialiased font-body;
   font-feature-settings: "kern" 1;
   overflow-x: hidden;
+  width: 100%;
+  max-width: 100vw;
+}
+
+input,
+select,
+textarea {
+  font-size: 16px !important;
+}
+
+.scroll-container-touch {
+  -webkit-overflow-scrolling: touch;
+}
+
+[dir="rtl"] .nav-drip::after {
+  transform-origin: right;
 }
 
 section {

@@ -1,6 +1,7 @@
 "use client";
 
-import { Volume2, VolumeX } from "lucide-react";
+import { ICONS } from "@/icons";
+import { PBIcon } from "@/components/ui/PBIcon";
 import { motion } from "framer-motion";
 import { useReservationStore } from "@/store/reservationStore";
 import { resumeAudioContext, startAmbientLoop, stopAmbientLoop } from "@/lib/reserveSounds";
@@ -24,7 +25,11 @@ export function AmbientAudioToggle() {
         else stopAmbientLoop();
       }}
     >
-      {ambientOn ? <Volume2 className="h-5 w-5" /> : <VolumeX className="h-5 w-5" />}
+      {ambientOn ? (
+        <PBIcon icon={ICONS.volumeOn} size={20} />
+      ) : (
+        <PBIcon icon={ICONS.volumeOff} size={20} />
+      )}
     </motion.button>
   );
 }

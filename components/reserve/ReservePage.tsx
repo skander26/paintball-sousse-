@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense } from "react";
+import { Suspense, useLayoutEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useReservationStore } from "@/store/reservationStore";
 import { ReserveUrlSync } from "@/components/reserve/ReserveUrlSync";
@@ -24,6 +24,26 @@ export function ReservePage() {
   const setStep = useReservationStore((s) => s.setStep);
   const setSquadPhase = useReservationStore((s) => s.setSquadPhase);
   const setNavigationDirection = useReservationStore((s) => s.setNavigationDirection);
+  const [ready, setReady] = useState(
+    () => useReservationStore.getState().step !== 4,
+  );
+
+  useLayoutEffect(() => {
+    const s = useReservationStore.getState();
+    if (s.step === 4) {
+      s.reset();
+    }
+    setReady(true);
+  }, []);
+
+  if (!ready) {
+    return (
+      <div
+        className="relative min-h-dvh bg-[#050507]"
+        aria-hidden
+      />
+    );
+  }
 
   const variants = {
     enter: (d: number) => ({ x: d > 0 ? 48 : -48, opacity: 0 }),

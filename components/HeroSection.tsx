@@ -3,7 +3,8 @@
 import { motion, useScroll, useTransform } from "framer-motion";
 import dynamic from "next/dynamic";
 import Link from "next/link";
-import { MessageCircle } from "lucide-react";
+import { ICONS } from "@/icons";
+import { PBIcon } from "@/components/ui/PBIcon";
 import { useEffect, useState } from "react";
 import { HeroCharacterSlot } from "@/components/HeroCharacterImage";
 import { PHONE_DISPLAY, WHATSAPP_URL } from "@/lib/constants";
@@ -18,6 +19,7 @@ const PaintballCanvas = dynamic(
 export function HeroSection() {
   const { t } = useI18n();
   const [mobile, setMobile] = useState(false);
+  const [tiny, setTiny] = useState(false);
 
   const { scrollY } = useScroll();
   const chevronOpacity = useTransform(scrollY, [0, 120], [1, 0]);
@@ -25,6 +27,14 @@ export function HeroSection() {
   useEffect(() => {
     const mq = window.matchMedia("(max-width: 1023px)");
     const upd = () => setMobile(mq.matches);
+    upd();
+    mq.addEventListener("change", upd);
+    return () => mq.removeEventListener("change", upd);
+  }, []);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 479px)");
+    const upd = () => setTiny(mq.matches);
     upd();
     mq.addEventListener("change", upd);
     return () => mq.removeEventListener("change", upd);
@@ -55,7 +65,26 @@ export function HeroSection() {
         data-mobile-visible
         className="pointer-events-none absolute inset-0 z-0 min-h-full w-full overflow-hidden"
       >
-        <PaintballCanvas mobile={mobile} />
+        {!tiny ? (
+          <PaintballCanvas mobile={mobile} />
+        ) : (
+          <div className="absolute inset-0 overflow-hidden" aria-hidden>
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_30%_20%,rgba(232,0,28,0.12),transparent_55%)]" />
+            <div className="absolute left-[12%] top-[22%] h-1.5 w-1.5 animate-pulse rounded-full bg-brand-red/70" />
+            <div
+              className="absolute left-[55%] top-[38%] h-1 w-1 animate-pulse rounded-full bg-brand-red/50"
+              style={{ animationDelay: "0.4s" }}
+            />
+            <div
+              className="absolute bottom-[30%] left-[40%] h-1.5 w-1.5 animate-pulse rounded-full bg-brand-red/40"
+              style={{ animationDelay: "0.8s" }}
+            />
+            <div
+              className="absolute right-[18%] top-[48%] h-1 w-1 animate-pulse rounded-full bg-brand-red/60"
+              style={{ animationDelay: "1.1s" }}
+            />
+          </div>
+        )}
       </div>
 
       <div className="relative z-[2] mx-auto grid w-full max-w-7xl gap-8 lg:grid-cols-[minmax(0,55%)_minmax(0,45%)] lg:items-center lg:gap-10">
@@ -114,7 +143,7 @@ export function HeroSection() {
               rel="noopener noreferrer"
               className="inline-flex min-h-[44px] items-center gap-2 font-body text-base text-white/85 transition hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-red"
             >
-              <MessageCircle className="h-5 w-5 text-green-400" aria-hidden />
+              <PBIcon icon={ICONS.whatsapp} size={20} color="#4ade80" aria-hidden />
               <span>
                 {t("hero_call")}{" "}
                 <strong className="text-white">{PHONE_DISPLAY}</strong>

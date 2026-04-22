@@ -3,7 +3,8 @@
 import { motion } from "framer-motion";
 import dynamic from "next/dynamic";
 import Link from "next/link";
-import { Trophy } from "lucide-react";
+import { ICONS } from "@/icons";
+import { PBIcon } from "@/components/ui/PBIcon";
 import { useEffect, useMemo, useState } from "react";
 import { TOURNAMENT_END } from "@/lib/constants";
 import { useI18n } from "@/lib/i18n";
@@ -112,7 +113,13 @@ export function TournamentSection() {
         </div>
 
         <div className="relative flex flex-col items-center gap-8">
-          <Trophy className="h-14 w-14 text-[var(--gold-accent)] drop-shadow-[0_0_24px_rgba(255,215,0,0.35)]" aria-hidden />
+          <PBIcon
+            icon={ICONS.trophy}
+            size={56}
+            color="var(--gold-accent)"
+            className="drop-shadow-[0_0_24px_rgba(255,215,0,0.35)]"
+            aria-hidden
+          />
 
           <div className="grid w-full max-w-xl grid-cols-2 gap-4 md:grid-cols-4">
             {units.map((u) => (
