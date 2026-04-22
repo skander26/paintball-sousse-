@@ -1,121 +1,97 @@
-"use client";
+'use client'
 
-import Image from "next/image";
-import Link from "next/link";
-import { ICONS } from "@/icons";
-import { PBIcon } from "@/components/ui/PBIcon";
+import Link from 'next/link'
+import { PBIcon } from '@/components/ui/PBIcon'
 import {
+  ADDRESS_LINES,
   EMAIL,
   FACEBOOK_URL,
   INSTAGRAM_URL,
   PHONE_DISPLAY,
-} from "@/lib/constants";
-import { useI18n } from "@/lib/i18n";
+  whatsappHref,
+} from '@/lib/constants'
+import { useI18n } from '@/lib/i18n'
+
+const quick = ['/#top', '/#experiences', '/#arsenal', '/#tournament', '/#gallery', '/#contact'] as const
+const quickKeys = ['nav.home', 'nav.exp', 'nav.arsenal', 'nav.tournament', 'nav.gallery', 'nav.contact'] as const
 
 export function Footer() {
-  const { t } = useI18n();
+  const { t } = useI18n()
+  const year = new Date().getFullYear()
 
   return (
-    <footer className="relative overflow-hidden border-t border-[rgba(232,0,28,0.2)] bg-[rgba(5,5,7,0.95)] px-4 py-16 backdrop-blur-sm md:px-10">
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 footer-sweep opacity-40"
-        style={{
-          background:
-            "linear-gradient(110deg, transparent 0%, rgba(232,0,28,0.22) 45%, transparent 70%)",
-          backgroundSize: "220% 100%",
-        }}
-      />
-
-      <div className="relative z-[1] mx-auto grid max-w-7xl gap-12 md:grid-cols-4">
+    <footer className="border-t border-[var(--border)] bg-[var(--bg-surface)] py-14">
+      <div className="container-pb grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-4">
         <div>
-          <div className="flex items-center gap-3">
-            <Image src="/logo.svg" alt="" width={48} height={48} />
-            <span className="font-display text-xl tracking-[0.18em]">
-              {t("brand")}
-            </span>
+          <div className="font-display text-[20px] uppercase tracking-[0.08em] text-[var(--text-primary)]">
+            Paintball Sousse
           </div>
-          <p className="mt-5 max-w-xs font-body text-muted">{t("tagline")}</p>
-          <div className="mt-6 flex gap-4">
-            <a
+          <p className="mt-3 max-w-xs font-body text-[14px] italic text-[var(--text-muted)]">{t('footer.tagline')}</p>
+          <div className="mt-5 flex gap-3">
+            <Link
               href={INSTAGRAM_URL}
               target="_blank"
-              rel="noopener noreferrer"
+              className="flex h-11 w-11 items-center justify-center rounded-md border border-[var(--border)] text-[var(--text-muted)] transition-colors hover:border-[var(--border-red)] hover:text-[var(--red)]"
               aria-label="Instagram"
-              className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-full border border-white/10 text-white transition hover:border-brand-red hover:text-brand-red"
             >
-              <PBIcon icon={ICONS.instagram} size={20} />
-            </a>
-            <a
+              <PBIcon name="instagram" className="text-xl" />
+            </Link>
+            <Link
               href={FACEBOOK_URL}
               target="_blank"
-              rel="noopener noreferrer"
+              className="flex h-11 w-11 items-center justify-center rounded-md border border-[var(--border)] text-[var(--text-muted)] transition-colors hover:border-[var(--border-red)] hover:text-[var(--red)]"
               aria-label="Facebook"
-              className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-full border border-white/10 text-white transition hover:border-brand-red hover:text-brand-red"
             >
-              <PBIcon icon={ICONS.facebook} size={20} />
-            </a>
+              <PBIcon name="facebook" className="text-xl" />
+            </Link>
+            <Link
+              href={whatsappHref('Bonjour Paintball Sousse')}
+              className="flex h-11 w-11 items-center justify-center rounded-md border border-[var(--border)] text-[var(--text-muted)] transition-colors hover:border-[var(--border-red)] hover:text-[var(--red)]"
+              aria-label="WhatsApp"
+            >
+              <PBIcon name="whatsapp" className="text-xl" />
+            </Link>
           </div>
         </div>
-
         <div>
-          <p className="font-display text-lg tracking-wide text-white">{t("footer_links")}</p>
-          <ul className="mt-5 space-y-3 font-body text-muted">
-            {[
-              ["#home", "nav_home"],
-              ["#experiences", "nav_exp"],
-              ["#arsenal", "nav_pack"],
-              ["#tournament", "nav_tour"],
-              ["#gallery", "nav_gal"],
-              ["#contact", "nav_contact"],
-            ].map(([href, key]) => (
+          <h4 className="font-display text-[18px] uppercase text-[var(--text-primary)]">{t('footer.links')}</h4>
+          <ul className="mt-4 space-y-2">
+            {quick.map((href, i) => (
               <li key={href}>
-                <Link href={href} className="transition hover:text-white">
-                  {t(key as "nav_home")}
+                <Link href={href} className="font-body text-[14px] text-[var(--text-muted)] hover:text-[var(--red)]">
+                  {t(quickKeys[i]!)}
                 </Link>
               </li>
             ))}
           </ul>
         </div>
-
         <div>
-          <p className="font-display text-lg tracking-wide text-white">{t("footer_services")}</p>
-          <ul className="mt-5 space-y-3 font-body text-muted">
-            {[
-              "Paintball",
-              "Team Building",
-              "Events",
-              "School Groups",
-              "Family Packages",
-            ].map((x) => (
-              <li key={x}>{x}</li>
+          <h4 className="font-display text-[18px] uppercase text-[var(--text-primary)]">{t('footer.services')}</h4>
+          <ul className="mt-4 space-y-2">
+            {(['footer.s1', 'footer.s2', 'footer.s3', 'footer.s4', 'footer.s5'] as const).map((k) => (
+              <li key={k}>
+                <span className="font-body text-[14px] text-[var(--text-muted)]">{t(k)}</span>
+              </li>
             ))}
           </ul>
         </div>
-
         <div>
-          <p className="font-display text-lg tracking-wide text-white">{t("footer_contact")}</p>
-          <ul className="mt-5 space-y-3 font-body text-muted">
-            <li>Kalaa Kebira · Route Sidi Bou Ali</li>
-            <li>
-              <a className="hover:text-white" href={`tel:${PHONE_DISPLAY.replace(/\s/g, "")}`}>
-                {PHONE_DISPLAY}
-              </a>
-            </li>
-            <li>
-              <a className="hover:text-white" href={`mailto:${EMAIL}`}>
-                {EMAIL}
-              </a>
-            </li>
-            <li>Open weekends · bookings daily</li>
-          </ul>
+          <h4 className="font-display text-[18px] uppercase text-[var(--text-primary)]">{t('footer.contact')}</h4>
+          <p className="mt-4 font-body text-[14px] leading-relaxed text-[var(--text-muted)]">
+            {ADDRESS_LINES.join(', ')}
+          </p>
+          <p className="mt-2 font-body text-[14px] text-[var(--text-muted)]">{PHONE_DISPLAY}</p>
+          <p className="mt-2 font-body text-[14px] text-[var(--text-muted)]">{EMAIL}</p>
         </div>
       </div>
-
-      <div className="relative z-[1] mx-auto mt-14 flex max-w-7xl flex-col items-start justify-between gap-4 border-t border-white/10 pt-10 font-body text-sm text-muted md:flex-row md:items-center">
-        <p>{t("footer_rights")}</p>
-        <p>{t("footer_made")}</p>
+      <div className="container-pb mt-10 flex flex-col items-start justify-between gap-3 border-t border-[var(--border)] pt-6 text-[var(--text-muted)] sm:flex-row sm:items-center">
+        <p className="font-body text-[13px]">
+          © {year} Paintball Sousse. {t('footer.rights')}
+        </p>
+        <p className="font-body text-[13px]">
+          {t('footer.made')} ❤️ {t('footer.made2')}
+        </p>
       </div>
     </footer>
-  );
+  )
 }

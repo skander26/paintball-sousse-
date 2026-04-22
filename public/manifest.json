@@ -1,18 +1,16 @@
 {
   "name": "Paintball Sousse",
-  "short_name": "PB Sousse",
-  "description": "Réservez le paintball à Sousse : groupes, team building, événements. Près du Mall de Sousse.",
+  "short_name": "Paintball Sousse",
+  "description": "Paintball à Sousse, Tunisie — réservation et infos.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#050507",
+  "background_color": "#0F0E11",
   "theme_color": "#E8001C",
-  "orientation": "portrait-primary",
-  "lang": "fr",
   "icons": [
     {
-      "src": "/logo.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
+      "src": "/logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
       "purpose": "any maskable"
     }
   ]

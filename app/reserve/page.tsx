@@ -1,5 +1,10 @@
-import { ReservePage } from "@/components/reserve/ReservePage";
+import { Suspense } from 'react'
+import ReserveClient from '@/components/reserve/ReserveClient'
 
-export default function ReservePageRoute() {
-  return <ReservePage />;
+export default function ReservePage() {
+  return (
+    <Suspense fallback={null}>
+      <ReserveClient />
+    </Suspense>
+  )
 }

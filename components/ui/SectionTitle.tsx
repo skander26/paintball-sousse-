@@ -1,55 +1,46 @@
-"use client";
+'use client'
 
-import { motion } from "framer-motion";
-import { STAGGER_CHILD_S } from "@/lib/constants";
+import { motion } from 'framer-motion'
 
-const container = {
-  hidden: { opacity: 0 },
-  show: {
-    opacity: 1,
-    transition: { staggerChildren: STAGGER_CHILD_S, delayChildren: 0.06 },
-  },
-};
+type Props = {
+  label: string
+  title: string
+  subtitle?: string
+  id?: string
+}
 
-const letter = {
-  hidden: { opacity: 0, y: 50 },
-  show: { opacity: 1, y: 0 },
-};
-
-export function SectionTitle({
-  title,
-  className = "",
-}: {
-  title: string;
-  className?: string;
-}) {
-  const chars = title.split("");
-
+export function SectionTitle({ label, title, subtitle, id }: Props) {
   return (
-    <div className={`relative mb-12 text-center ${className}`}>
-      <motion.h2
-        variants={container}
-        initial="hidden"
-        whileInView="show"
-        viewport={{ once: true, margin: "-10% 0px" }}
-        className="font-display text-4xl tracking-[0.12em] text-white md:text-6xl"
-        aria-label={title}
+    <div id={id} className="mx-auto mb-12 max-w-3xl text-center md:mb-16">
+      <motion.p
+        initial={{ opacity: 0, y: 12 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: '-40px' }}
+        transition={{ duration: 0.35 }}
+        className="pb-label mb-3"
       >
-        {chars.map((c, i) => (
-          <motion.span
-            key={`${c}-${i}`}
-            variants={letter}
-            className="inline-block"
-            style={{ whiteSpace: c === " " ? "pre" : undefined }}
-          >
-            {c === " " ? "\u00a0" : c}
-          </motion.span>
-        ))}
+        {label}
+      </motion.p>
+      <motion.h2
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: '-40px' }}
+        transition={{ duration: 0.45, delay: 0.05 }}
+        className="text-display-md text-[var(--text-primary)]"
+      >
+        {title}
       </motion.h2>
-      <div
-        className="mx-auto mt-4 h-1 w-40 rounded-full bg-gradient-to-r from-transparent via-brand-red to-transparent"
-        aria-hidden
-      />
+      {subtitle ? (
+        <motion.p
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-40px' }}
+          transition={{ duration: 0.45, delay: 0.1 }}
+          className="text-body-md mt-4 text-[var(--text-secondary)]"
+        >
+          {subtitle}
+        </motion.p>
+      ) : null}
     </div>
-  );
+  )
 }

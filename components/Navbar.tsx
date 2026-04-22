@@ -1,225 +1,152 @@
-"use client";
+'use client'
 
-import { AnimatePresence, motion } from "framer-motion";
-import Image from "next/image";
-import Link from "next/link";
-import { useEffect, useState } from "react";
-import { PBIcon } from "@/components/ui/PBIcon";
-import { DURATION_NORMAL_S, FACEBOOK_URL, INSTAGRAM_URL } from "@/lib/constants";
-import { ICONS } from "@/icons";
-import type { Locale } from "@/lib/i18n";
-import { useI18n } from "@/lib/i18n";
+import { AnimatePresence, motion, useMotionValueEvent, useScroll } from 'framer-motion'
+import Image from 'next/image'
+import Link from 'next/link'
+import { useEffect, useState } from 'react'
+import { LanguageSwitcher } from '@/components/ui/LanguageSwitcher'
+import { PBIcon } from '@/components/ui/PBIcon'
+import { RedButton } from '@/components/ui/RedButton'
+import { useI18n } from '@/lib/i18n'
+import { sounds } from '@/lib/sounds'
 
-const NAV = [
-  { href: "#home", key: "nav_home" as const },
-  { href: "#experiences", key: "nav_exp" as const },
-  { href: "#arsenal", key: "nav_pack" as const },
-  { href: "#tournament", key: "nav_tour" as const },
-  { href: "#gallery", key: "nav_gal" as const },
-  { href: "#contact", key: "nav_contact" as const },
-];
+const links = [
+  { href: '/#top', key: 'nav.home', id: 'top' },
+  { href: '/#experiences', key: 'nav.exp', id: 'experiences' },
+  { href: '/#arsenal', key: 'nav.arsenal', id: 'arsenal' },
+  { href: '/#tournament', key: 'nav.tournament', id: 'tournament' },
+  { href: '/#gallery', key: 'nav.gallery', id: 'gallery' },
+  { href: '/#contact', key: 'nav.contact', id: 'contact' },
+]
 
 export function Navbar() {
-  const { t, locale, setLocale } = useI18n();
-  const [solid, setSolid] = useState(false);
-  const [open, setOpen] = useState(false);
+  const { t } = useI18n()
+  const { scrollY } = useScroll()
+  const [scrolled, setScrolled] = useState(false)
+  const [open, setOpen] = useState(false)
+  const [active, setActive] = useState('top')
+
+  useMotionValueEvent(scrollY, 'change', (y) => {
+    setScrolled(y > 80)
+  })
 
   useEffect(() => {
-    const onScroll = () => setSolid(window.scrollY > 24);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+    const ids = ['top', 'experiences', 'arsenal', 'tournament', 'gallery', 'contact']
+    const els = ids.map((id) => document.getElementById(id)).filter(Boolean) as HTMLElement[]
+    const obs = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((e) => e.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0]
+        if (visible?.target.id) setActive(visible.target.id)
+      },
+      { rootMargin: '-45% 0px -45% 0px', threshold: [0, 0.25, 0.5, 0.75, 1] },
+    )
+    els.forEach((el) => obs.observe(el))
+    return () => obs.disconnect()
+  }, [])
 
-  useEffect(() => {
-    document.body.style.overflow = open ? "hidden" : "";
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [open]);
-
-  const cycleLocale = (l: Locale) =>
-    setLocale(l === "en" ? "fr" : l === "fr" ? "ar" : "en");
+  const barBg = scrolled ? 'bg-[var(--bg-overlay)]' : 'bg-transparent'
+  const barBorder = scrolled ? 'border-b border-[var(--border)]' : 'border-b border-transparent'
 
   return (
     <>
-      <motion.header
-        initial={false}
-        animate={{
-          backgroundColor: solid ? "rgba(5,5,7,0.95)" : "rgba(5,5,7,0)",
-          backdropFilter: solid ? "blur(20px)" : "blur(0px)",
-        }}
-        transition={{ duration: DURATION_NORMAL_S }}
-        className="fixed left-0 right-0 top-0 z-[1000] border-b border-transparent"
+      <header
+        className={`fixed inset-x-0 top-0 z-50 transition-colors duration-300 ${barBg} ${barBorder}`}
       >
-        <nav className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 md:px-8">
-          <Link
-            href="#home"
-            className="flex items-center gap-3 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-red"
-            aria-label={t("brand")}
-          >
-            <Image src="/logo.svg" alt="" width={44} height={44} priority />
-            <span className="hidden min-[400px]:inline font-display text-xl tracking-[0.18em] text-white md:text-2xl">
-              {t("brand")}
+        <div className="container-pb flex h-14 items-center justify-between gap-3 px-5 md:h-16 lg:px-8">
+          <Link href="/#top" className="flex min-h-[44px] items-center gap-3">
+            <Image src="/logo.png" alt="Paintball Sousse" width={36} height={36} className="h-9 w-9 object-contain" />
+            <span className="hidden font-display text-[18px] uppercase tracking-[0.08em] text-[var(--text-primary)] min-[480px]:inline">
+              Paintball Sousse
             </span>
           </Link>
 
-          <div className="hidden items-center gap-8 lg:flex">
-            {NAV.map((item) => (
-              <Link
-                key={item.key}
-                href={item.href}
-                className="nav-drip font-body text-sm font-semibold uppercase tracking-widest text-white/80 transition hover:text-white"
-              >
-                {t(item.key)}
-              </Link>
-            ))}
-            <div className="flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-2 py-1">
-              {(["en", "fr", "ar"] as Locale[]).map((l) => (
-                <button
-                  key={l}
-                  type="button"
-                  onClick={() => setLocale(l)}
-                  className={`min-h-[36px] min-w-[36px] rounded-full px-2 font-mono text-[11px] uppercase transition ${
-                    locale === l
-                      ? "bg-brand-red text-white"
-                      : "text-white/60 hover:text-white"
+          <nav className="hidden items-center gap-8 lg:flex">
+            {links.map((l) => {
+              const id = l.href.split('#')[1] ?? 'top'
+              const isActive = active === id
+              return (
+                <Link
+                  key={l.key}
+                  href={l.href}
+                  className={`group relative pb-1 font-body text-[14px] font-semibold transition-colors hover:text-[var(--text-primary)] ${
+                    isActive ? 'text-[var(--red)]' : 'text-[var(--text-secondary)]'
                   }`}
-                  aria-pressed={locale === l}
-                  aria-label={`Language ${l}`}
                 >
-                  {l}
-                </button>
-              ))}
-            </div>
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.97 }}>
-              <Link
-                href="/reserve"
-                className="skew-x-[-2deg] inline-block bg-brand-red px-6 py-3 font-display text-sm uppercase tracking-wider text-white shadow-glow transition hover:shadow-[0_0_36px_var(--red-glow)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-red"
-              >
-                <span className="skew-x-[2deg] inline-block">{t("nav_book")}</span>
-              </Link>
-            </motion.div>
-          </div>
+                  {t(l.key)}
+                  <motion.span
+                    className="absolute bottom-0 left-0 h-[2px] w-full bg-[var(--red)]"
+                    initial={false}
+                    animate={{ scaleX: isActive ? 1 : 0 }}
+                    transition={{ duration: 0.22 }}
+                    style={{ transformOrigin: '50% 50%' }}
+                  />
+                </Link>
+              )
+            })}
+          </nav>
 
-          <div className="flex items-center gap-2 lg:hidden">
-            <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.98 }}>
-              <Link
-                href="/reserve"
-                className="skew-x-[-2deg] inline-block bg-brand-red px-4 py-2 font-display text-xs uppercase tracking-wider text-white shadow-glow focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-red"
-              >
-                <span className="skew-x-[2deg] inline-block">{t("nav_book")}</span>
-              </Link>
-            </motion.div>
+          <div className="flex items-center gap-3">
+            <div className="hidden sm:block">
+              <LanguageSwitcher />
+            </div>
+            <div className="hidden sm:block">
+              <RedButton href="/reserve">{t('nav.reserve')}</RedButton>
+            </div>
             <button
               type="button"
-              onClick={() => cycleLocale(locale)}
-              className="min-h-[44px] min-w-[44px] rounded-full border border-white/15 px-3 font-mono text-xs uppercase text-white"
-              aria-label="Cycle language"
+              className="flex h-12 w-12 items-center justify-center rounded-md border border-[var(--border)] bg-[var(--bg-surface)] lg:hidden"
+              aria-label="Menu"
+              onClick={() => {
+                sounds.click()
+                setOpen((v) => !v)
+              }}
             >
-              {locale}
-            </button>
-            <button
-              type="button"
-              className="flex min-h-[48px] min-w-[48px] items-center justify-center rounded-full border border-white/15 text-white"
-              aria-label={open ? "Close menu" : "Open menu"}
-              aria-expanded={open}
-              onClick={() => setOpen((v) => !v)}
-            >
-              <span className="sr-only">Menu</span>
-              <PBIcon icon={open ? ICONS.close : ICONS.menu} size={22} />
+              <PBIcon name={open ? 'close' : 'menu'} className="text-2xl text-[var(--text-primary)]" />
             </button>
           </div>
-        </nav>
-      </motion.header>
+        </div>
+      </header>
 
       <AnimatePresence>
-        {open && (
+        {open ? (
           <motion.div
-            key="mobile-nav"
+            className="fixed inset-0 z-40 flex flex-col bg-[rgba(15,14,17,0.98)] px-8 pb-10 pt-24 lg:hidden"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[9999] bg-[rgba(5,5,7,0.98)] backdrop-blur-[20px] lg:hidden"
+            transition={{ duration: 0.25 }}
           >
-            <button
-              type="button"
-              className="absolute right-4 top-4 z-10 flex min-h-[48px] min-w-[48px] items-center justify-center rounded-full border border-white/15 text-white transition hover:bg-white/10"
-              aria-label="Close menu"
-              onClick={() => setOpen(false)}
-            >
-              <PBIcon icon={ICONS.close} size={22} />
-            </button>
-            <div
-              className="absolute inset-0 opacity-30"
-              style={{
-                backgroundImage:
-                  "repeating-linear-gradient(180deg, rgba(232,0,28,0.15) 0 2px, transparent 2px 14px)",
-              }}
-              aria-hidden
-            />
-            <div className="relative flex h-full flex-col justify-center px-8 pb-24">
-              {NAV.map((item, i) => (
+            <div className="flex flex-1 flex-col gap-4">
+              {links.map((l, i) => (
                 <motion.div
-                  key={item.key}
-                  initial={{ x: -40, opacity: 0 }}
+                  key={l.key}
+                  initial={{ x: -24, opacity: 0 }}
                   animate={{ x: 0, opacity: 1 }}
-                  exit={{ x: -40, opacity: 0 }}
-                  transition={{ delay: i * 0.1 }}
+                  transition={{ delay: i * 0.08 }}
                 >
                   <Link
-                    href={item.href}
+                    href={l.href}
                     onClick={() => setOpen(false)}
-                    className="block py-3 font-display text-[clamp(1.75rem,8vw,3.5rem)] leading-tight tracking-[0.12em] text-white"
+                    className="block py-3 font-body text-[18px] font-semibold text-[var(--text-primary)]"
                   >
-                    {t(item.key)}
+                    {t(l.key)}
                   </Link>
                 </motion.div>
               ))}
-              <motion.div
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0 }}
-                transition={{ delay: 0.35 }}
-                className="mt-8"
-              >
-                <Link
-                  href="/reserve"
-                  onClick={() => setOpen(false)}
-                  className="inline-flex min-h-[52px] items-center justify-center bg-brand-red px-6 py-3 font-display text-lg uppercase tracking-widest text-white"
-                >
-                  {t("nav_book")}
-                </Link>
-              </motion.div>
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.5 }}
-                className="absolute bottom-10 left-0 right-0 flex justify-center gap-6"
-              >
-                <a
-                  href={INSTAGRAM_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex min-h-[48px] min-w-[48px] items-center justify-center rounded-full border border-white/15 text-white transition hover:border-brand-red"
-                  aria-label="Instagram"
-                >
-                  <PBIcon icon={ICONS.instagram} size={22} />
-                </a>
-                <a
-                  href={FACEBOOK_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex min-h-[48px] min-w-[48px] items-center justify-center rounded-full border border-white/15 text-white transition hover:border-brand-red"
-                  aria-label="Facebook"
-                >
-                  <PBIcon icon={ICONS.facebook} size={22} />
-                </a>
-              </motion.div>
+            </div>
+            <div className="mt-6 flex flex-col gap-4 border-t border-[var(--border)] pt-6">
+              <LanguageSwitcher />
+              <RedButton href="/reserve" onNavigate={() => setOpen(false)}>
+                {t('nav.reserve')}
+              </RedButton>
             </div>
           </motion.div>
-        )}
+        ) : null}
       </AnimatePresence>
+
+      <div className="h-14 md:h-16" aria-hidden />
     </>
-  );
+  )
 }

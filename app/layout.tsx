@@ -1,69 +1,52 @@
-import type { Metadata, Viewport } from "next";
-import { Providers } from "@/components/providers";
-import { ParticleBackground } from "@/components/ui/ParticleBackground";
-import "./globals.css";
+import type { Metadata, Viewport } from 'next'
+import './globals.css'
+import { ParticleBackground } from '@/components/ui/ParticleBackground'
+import { Providers } from '@/components/providers'
 
 export const metadata: Metadata = {
-  title: "Paintball Sousse | #1 Paintball Experience in Tunisia",
+  metadataBase: new URL('https://paintballsousse.tn'),
+  title: {
+    default: 'Paintball Sousse | #1 Paintball en Tunisie',
+    template: '%s | Paintball Sousse',
+  },
   description:
-    "Book the ultimate paintball experience in Sousse, Tunisia. Groups, team building, birthdays, tournaments. Near Mall of Sousse. +216 46 209 091",
+    "Vivez l'adrénaline du paintball à Sousse, Tunisie. Groupes, team building, anniversaires, tournois. Près du Mall of Sousse.",
   keywords: [
-    "paintball sousse",
-    "paintball tunisia",
-    "team building sousse",
-    "outdoor activities sousse",
+    'paintball sousse',
+    'paintball tunisie',
+    'team building sousse',
+    'loisirs sousse',
   ],
-  metadataBase: new URL("https://paintballsousse.tn"),
   openGraph: {
-    title: "Paintball Sousse",
-    description: "Feel the adrenaline. Book your paintball session today.",
-    url: "https://paintballsousse.tn",
-    siteName: "Paintball Sousse",
-    images: [{ url: "/logo.svg", width: 1200, height: 630, alt: "Paintball Sousse" }],
-    locale: "fr_TN",
-    type: "website",
+    title: 'Paintball Sousse',
+    description: 'Ressentez l’adrénaline.',
+    images: ['/logo.png'],
   },
-  twitter: {
-    card: "summary_large_image",
-    title: "Paintball Sousse",
-    description: "Feel the adrenaline. Book your paintball session today.",
-  },
-  manifest: "/manifest.json",
-  alternates: { canonical: "https://paintballsousse.tn" },
-};
+  manifest: '/manifest.json',
+}
 
 export const viewport: Viewport = {
-  width: "device-width",
-  initialScale: 1,
+  themeColor: '#E8001C',
   maximumScale: 5,
-  themeColor: "#E8001C",
-};
+}
 
-export default function RootLayout({
-  children,
-}: Readonly<{ children: React.ReactNode }>) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="fr" suppressHydrationWarning>
       <head>
-        <link rel="icon" href="/logo.svg" type="image/svg+xml" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
-          rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossOrigin="anonymous"
-        />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Orbitron:wght@500;700;800&family=Rajdhani:wght@400;600;700&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Orbitron:wght@400;500;600;700&family=Rajdhani:wght@400;500;600;700&display=swap"
           rel="stylesheet"
         />
       </head>
-      <body className="relative min-h-dvh overflow-x-hidden bg-[#050507]">
+      <body className="font-body antialiased" style={{ background: '#0F0E11', overflowX: 'hidden' }}>
         <ParticleBackground />
-        <div className="relative z-[1] min-h-dvh">
-          <div className="grain-overlay" aria-hidden />
+        <div className="relative z-[2]">
           <Providers>{children}</Providers>
         </div>
       </body>
     </html>
-  );
+  )
 }

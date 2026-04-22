@@ -1,61 +1,47 @@
-"use client";
+'use client'
 
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { motion } from "framer-motion";
-import { useReservationStore } from "@/store/reservationStore";
+import Image from 'next/image'
+import Link from 'next/link'
+import { useReservationStore, stepIndex, type ReserveStep } from '@/store/reservationStore'
+import { useI18n } from '@/lib/i18n'
 
-const LABELS: Record<number, string> = {
-  1: "SELECT YOUR DATE",
-  2: "ASSEMBLE YOUR SQUAD",
-  3: "MISSION BRIEFING",
-  4: "MISSION ACCEPTED",
-};
+const widths: Record<ReserveStep, string> = {
+  calendar: '25%',
+  squad: '50%',
+  briefing: '75%',
+  success: '100%',
+}
 
 export function ReserveTopBar() {
-  const router = useRouter();
-  const reset = useReservationStore((s) => s.reset);
-  const step = useReservationStore((s) => s.step);
-
-  const pct = (step / 4) * 100;
+  const { t } = useI18n()
+  const step = useReservationStore((s) => s.step)
+  const idx = stepIndex(step)
 
   return (
-    <header className="relative z-20 border-b border-white/10 bg-[rgba(5,5,7,0.9)] px-4 py-3 backdrop-blur-md md:px-8">
-      <div className="mx-auto flex max-w-6xl flex-col gap-3">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <Link
-            href="/"
-            className="font-body text-xs uppercase tracking-wider text-white/70 transition hover:text-white"
-            onClick={(e) => {
-              if (step !== 4) return;
-              e.preventDefault();
-              reset();
-              router.push("/");
-            }}
-          >
-            ← EXIT MISSION
-          </Link>
-          <div className="text-center">
-            <p className="font-display text-lg tracking-wide text-white md:text-xl">PAINTBALL SOUSSE</p>
-            <p className="font-body text-[11px] uppercase tracking-[0.2em] text-muted">Tactical reservation system</p>
-          </div>
-          <p className="font-mono text-xs text-[#E8001C] md:text-sm" style={{ fontFamily: "var(--font-orbitron)" }}>
-            STEP {step}/4
-          </p>
+    <div className="sticky top-0 z-50 border-b border-[var(--border)] bg-[var(--bg-overlay)]">
+      <div className="flex h-14 items-center justify-between px-4 sm:px-8">
+        <Link href="/" className="min-h-[44px] font-body text-[14px] text-[var(--text-muted)] hover:text-[var(--text-primary)]">
+          ← {t('reserve.quit')}
+        </Link>
+        <div className="flex items-center gap-2">
+          <Image src="/logo.png" alt="" width={28} height={28} className="h-7 w-7 object-contain" />
+          <span className="hidden font-display text-[16px] uppercase tracking-[0.08em] text-[var(--text-primary)] sm:inline">
+            Paintball Sousse
+          </span>
         </div>
-        <p className="text-center font-body text-[10px] text-muted/90 md:text-[11px]">{LABELS[step]}</p>
-        <div className="relative h-2 w-full overflow-hidden rounded-full bg-white/5">
-          <motion.div
-            className="h-full rounded-full bg-[#E8001C]"
-            style={{
-              width: `${pct}%`,
-              boxShadow: "4px 0 12px #E8001C",
-            }}
-            initial={false}
-            transition={{ type: "spring", stiffness: 120, damping: 22 }}
-          />
+        <div className="font-data text-[13px] text-[var(--red)]">
+          {t('reserve.step')} {idx}/4
         </div>
       </div>
-    </header>
-  );
+      <div className="h-[3px] w-full bg-[var(--border)]">
+        <div
+          className="h-full bg-[var(--red)] transition-[width] duration-500 ease-out"
+          style={{
+            width: widths[step],
+            boxShadow: '2px 0 8px var(--red-glow)',
+          }}
+        />
+      </div>
+    </div>
+  )
 }

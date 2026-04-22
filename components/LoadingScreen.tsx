@@ -1,170 +1,118 @@
-"use client";
+'use client'
 
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { LoadingGun } from "@/components/LoadingGun";
-import { useI18n } from "@/lib/i18n";
-import gsap from "gsap";
+import { AnimatePresence, motion } from 'framer-motion'
+import { useEffect, useState } from 'react'
+import { useI18n } from '@/lib/i18n'
 
-const LOAD_DURATION_MS = 2200;
-const HOLD_AT_FULL_MS = 140;
-const EXPLODE_S = 0.55;
-const UNVEIL_S = 0.45;
+const DURATION_MS = 2200
 
-type LoadingScreenProps = {
-  onDone: () => void;
-};
+const GUN_PATH =
+  'M40 120 L40 95 Q40 80 55 75 L120 68 L125 40 Q128 22 150 20 L280 18 Q310 18 330 35 L345 55 L350 85 L360 88 Q372 92 372 105 L372 118 Q372 132 358 138 L330 142 L310 165 Q300 182 280 182 L210 188 Q190 190 175 178 L160 155 L140 150 L95 155 Q70 158 55 145 L40 130 Z'
 
-function playShotBurst() {
-  const ACtx =
-    window.AudioContext ||
-    (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
-  if (!ACtx) return;
-  const ctx = new ACtx();
-  const o = ctx.createOscillator();
-  const g = ctx.createGain();
-  o.type = "square";
-  o.frequency.setValueAtTime(220, ctx.currentTime);
-  o.frequency.exponentialRampToValueAtTime(42, ctx.currentTime + 0.1);
-  g.gain.setValueAtTime(0.22, ctx.currentTime);
-  g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.18);
-  o.connect(g);
-  g.connect(ctx.destination);
-  o.start();
-  o.stop(ctx.currentTime + 0.2);
-}
-
-export function LoadingScreen({ onDone }: LoadingScreenProps) {
-  const { t } = useI18n();
-  const reduce = useReducedMotion();
-  const [progress, setProgress] = useState(0);
-  const [phase, setPhase] = useState<"fill" | "burst" | "fade">("fill");
-  const [soundOn, setSoundOn] = useState(false);
-  const splashPlayed = useRef(false);
-  const burstRan = useRef(false);
-  const rootRef = useRef<HTMLDivElement>(null);
-
+export function LoadingScreen({ onDone }: { onDone: () => void }) {
+  const { t } = useI18n()
+  const [visible, setVisible] = useState(true)
+  const [progress, setProgress] = useState(0)
   useEffect(() => {
-    if (reduce) {
-      setProgress(100);
-      const tBurst = window.setTimeout(() => setPhase("burst"), HOLD_AT_FULL_MS);
-      return () => clearTimeout(tBurst);
-    }
-    const start = performance.now();
-    let frame = 0;
+    const start = performance.now()
+    let raf = 0
     const tick = (now: number) => {
-      const p = Math.min(
-        100,
-        ((now - start) / LOAD_DURATION_MS) * 100,
-      );
-      setProgress(p);
-      if (p < 100) frame = requestAnimationFrame(tick);
-      else {
-        window.setTimeout(() => setPhase("burst"), HOLD_AT_FULL_MS);
+      const p = Math.min(1, (now - start) / DURATION_MS)
+      setProgress(p)
+      if (p < 1) {
+        raf = requestAnimationFrame(tick)
+      } else {
+        setTimeout(() => setVisible(false), 200)
       }
-    };
-    frame = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(frame);
-  }, [reduce]);
+    }
+    raf = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(raf)
+  }, [])
 
   useEffect(() => {
-    if (phase !== "burst") return;
-    if (burstRan.current) return;
-    burstRan.current = true;
-
-    if (!splashPlayed.current && soundOn && !reduce) {
-      splashPlayed.current = true;
-      playShotBurst();
+    if (!visible) {
+      const tmr = setTimeout(onDone, 400)
+      return () => clearTimeout(tmr)
     }
+  }, [visible, onDone])
 
-    gsap.timeline().to(rootRef.current, {
-      opacity: 0,
-      duration: UNVEIL_S,
-      delay: EXPLODE_S,
-      ease: "power2.inOut",
-      onComplete: () => {
-        setPhase("fade");
-        onDone();
-      },
-    });
-  }, [phase, soundOn, reduce, onDone]);
+  const skip = () => {
+    setProgress(1)
+    setVisible(false)
+  }
 
-  const enableSound = useCallback(() => {
-    setSoundOn(true);
-    const ACtx =
-      window.AudioContext ||
-      (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
-    if (!ACtx) return;
-    const ctx = new ACtx();
-    if (ctx.state === "suspended") void ctx.resume();
-  }, []);
+  const w = 400 * progress
 
   return (
     <AnimatePresence>
-      {phase !== "fade" && (
+      {visible ? (
         <motion.div
-          key="loader-root"
-          ref={rootRef}
-          className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[#050507]"
+          key="loading"
+          className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-[#0F0E11] px-6"
           initial={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: UNVEIL_S }}
+          transition={{ duration: 0.4, ease: 'easeInOut' }}
         >
+          <motion.div
+            className="mb-6"
+            animate={{ rotate: 360 }}
+            transition={{ duration: 3.2, repeat: Infinity, ease: 'linear' }}
+            aria-hidden
+          >
+            <svg width="60" height="60" viewBox="0 0 64 64">
+              <circle cx="32" cy="32" r="28" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="3" />
+              <path
+                d="M32 8 L32 56 M8 32 L56 32"
+                stroke="#E8001C"
+                strokeWidth="3"
+                strokeLinecap="round"
+              />
+              <circle cx="32" cy="32" r="6" fill="#E8001C" />
+            </svg>
+          </motion.div>
+
+          <div className="relative w-full max-w-md">
+            <svg viewBox="0 0 400 220" className="h-auto w-full" aria-hidden>
+              <defs>
+                <clipPath id="gunClip" clipPathUnits="userSpaceOnUse">
+                  <path d={GUN_PATH} />
+                </clipPath>
+              </defs>
+              <path d={GUN_PATH} fill="rgba(255,255,255,0.06)" stroke="var(--border)" strokeWidth="2" />
+              <g clipPath="url(#gunClip)">
+                <rect x="0" y="0" width={w} height="220" fill="#E8001C" />
+              </g>
+              <path d={GUN_PATH} fill="none" stroke="rgba(255,255,255,0.12)" strokeWidth="1.5" />
+              {progress >= 1 ? (
+                <motion.circle
+                  cx="360"
+                  cy="105"
+                  r="6"
+                  fill="#E8001C"
+                  initial={{ scale: 0, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{ type: 'spring', stiffness: 260, damping: 16 }}
+                />
+              ) : null}
+            </svg>
+          </div>
+
+          <p className="mt-6 font-data text-[11px] font-semibold uppercase tracking-[0.35em] text-[var(--red)]">
+            {t('loading.text')}
+          </p>
+          <p className="mt-2 font-display text-[clamp(26px,6vw,32px)] uppercase tracking-[0.08em] text-[var(--text-primary)]">
+            {t('loading.brand')}
+          </p>
+
           <button
             type="button"
-            onClick={enableSound}
-            className="absolute left-6 top-6 min-h-[44px] rounded-full border border-white/15 px-4 py-2 font-mono text-[10px] uppercase tracking-[0.3em] text-white/70 transition hover:border-brand-red hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-red"
-            aria-label={soundOn ? t("sound_off") : t("sound")}
+            onClick={skip}
+            className="absolute bottom-8 right-8 min-h-[44px] font-body text-[12px] text-[var(--text-muted)] transition-colors hover:text-[var(--text-primary)]"
           >
-            {soundOn ? t("sound_off") : t("sound")}
+            {t('loading.skip')} →
           </button>
-
-          <AnimatePresence mode="sync">
-            {phase === "burst" && (
-              <motion.div
-                key="splat"
-                className="pointer-events-none absolute inset-0 flex items-center justify-center bg-[#050507]"
-                initial={{ opacity: 1 }}
-              >
-                <motion.div
-                  initial={{ scale: 0, opacity: 0.85 }}
-                  animate={{
-                    scale: reduce ? 1.2 : 4,
-                    opacity: 1,
-                  }}
-                  transition={{
-                    type: "spring",
-                    stiffness: 210,
-                    damping: 22,
-                    mass: 0.65,
-                  }}
-                  className="h-[70vmin] w-[70vmin] bg-[#E8001C]"
-                  style={{
-                    clipPath:
-                      "polygon(28% 8%, 74% 4%, 94% 28%, 88% 74%, 58% 96%, 22% 88%, 6% 52%, 14% 22%)",
-                  }}
-                />
-              </motion.div>
-            )}
-          </AnimatePresence>
-
-          <div className="relative z-[2] flex flex-col items-center px-4">
-            <div className="mb-6">
-              <LoadingGun progress={progress} />
-            </div>
-
-            <motion.div
-              className="mb-10 h-10 w-2 rounded-full bg-brand-red/80"
-              animate={{ y: [0, 18, 0] }}
-              transition={{ duration: 2.6, repeat: Infinity, ease: "easeInOut" }}
-            />
-
-            <h1 className="font-display text-4xl tracking-wide text-white md:text-6xl">
-              PAINTBALL SOUSSE
-            </h1>
-          </div>
         </motion.div>
-      )}
+      ) : null}
     </AnimatePresence>
-  );
+  )
 }

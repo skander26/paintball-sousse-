@@ -1,16 +1,18 @@
-"use client";
+'use client'
 
-import { MotionConfig, useReducedMotion } from "framer-motion";
-import type { ReactNode } from "react";
-import { I18nProvider } from "@/lib/i18n";
+import { useEffect } from 'react'
+import { I18nProvider } from '@/lib/i18n'
+import { unlockSounds } from '@/lib/sounds'
 
-export function Providers({ children }: { children: ReactNode }) {
-  const reduce = useReducedMotion();
-  return (
-    <I18nProvider>
-      <MotionConfig reducedMotion={reduce ? "always" : "user"}>
-        {children}
-      </MotionConfig>
-    </I18nProvider>
-  );
+export function Providers({ children }: { children: React.ReactNode }) {
+  useEffect(() => {
+    const onFirst = () => {
+      void unlockSounds()
+      window.removeEventListener('pointerdown', onFirst)
+    }
+    window.addEventListener('pointerdown', onFirst, { passive: true })
+    return () => window.removeEventListener('pointerdown', onFirst)
+  }, [])
+
+  return <I18nProvider>{children}</I18nProvider>
 }

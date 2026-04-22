@@ -1,193 +1,215 @@
-"use client";
+'use client'
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef } from 'react'
 
 type Particle = {
-  x: number;
-  y: number;
-  size: number;
-  opacity: number;
-  speedY: number;
-  speedX: number;
-  drift: number;
-  driftSpeed: number;
-  phase: number;
-};
-
-const BG = "#050507";
-const RED = "#E8001C";
-/** Multiplicateur de vitesse (léger boost par rapport à la version initiale) */
-const SPEED = 8;
+  x: number
+  y: number
+  radius: number
+  opacity: number
+  speedY: number
+  speedX: number
+  phase: number
+  driftAmp: number
+  driftFreq: number
+  hasTrail: boolean
+  trail: { x: number; y: number; opacity: number }[]
+  trailMax: number
+}
 
 export function ParticleBackground() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const particlesRef = useRef<Particle[]>([]);
-  const timeRef = useRef(0);
-  const rafRef = useRef(0);
-  const runningRef = useRef(false);
+  const canvasRef = useRef<HTMLCanvasElement>(null)
+  const stateRef = useRef({ running: false, raf: 0, time: 0 })
+  const particlesRef = useRef<Particle[]>([])
 
   useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
+    const canvas = canvasRef.current
+    if (!canvas) return
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return
+    const state = stateRef.current
+    const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches
 
-    const prefersReducedMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    ).matches;
-
-    const getCount = () => {
-      const isMobile = window.innerWidth < 768;
-      const cores = navigator.hardwareConcurrency ?? 4;
-      const mem = (navigator as Navigator & { deviceMemory?: number }).deviceMemory;
-      const isLowEnd = cores <= 2 || (mem !== undefined && mem <= 2);
-      if (isLowEnd) return 20;
-      if (isMobile) return 40;
-      return 75;
-    };
-
-    const initParticles = (w: number, h: number) => {
-      const count = getCount();
-      const sizes = [3, 4, 5, 6, 8, 9, 10];
-      const particles: Particle[] = [];
-      for (let i = 0; i < count; i++) {
-        const size = sizes[Math.floor(Math.random() * sizes.length)]!;
-        const isLarge = size >= 8;
-        const isMid = size >= 5 && size < 8;
-        particles.push({
-          x: Math.random() * w,
-          y: Math.random() * h,
-          size,
-          opacity: isLarge
-            ? 0.7 + Math.random() * 0.3
-            : isMid
-              ? 0.35 + Math.random() * 0.3
-              : 0.15 + Math.random() * 0.2,
-          speedY:
-            -SPEED *
-            (0.08 + Math.random() * 0.18 + (size / 10) * 0.1),
-          speedX: (Math.random() - 0.5) * 0.04 * SPEED,
-          drift: 0.3 + Math.random() * 0.8,
-          driftSpeed: SPEED * (0.002 + Math.random() * 0.004),
-          phase: Math.random() * Math.PI * 2,
-        });
-      }
-      particlesRef.current = particles;
-    };
-
-    const resize = () => {
-      const w = window.innerWidth;
-      const h = window.innerHeight;
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      canvas.width = Math.floor(w * dpr);
-      canvas.height = Math.floor(h * dpr);
-      canvas.style.width = `${w}px`;
-      canvas.style.height = `${h}px`;
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      initParticles(w, h);
-    };
-
-    const drawStatic = (w: number, h: number) => {
-      ctx.fillStyle = BG;
-      ctx.fillRect(0, 0, w, h);
-      for (const p of particlesRef.current) {
-        ctx.save();
-        ctx.globalAlpha = p.opacity;
-        ctx.fillStyle = RED;
-        if (p.size >= 8) {
-          ctx.shadowColor = RED;
-          ctx.shadowBlur = 6;
-        }
-        ctx.fillRect(p.x, p.y, p.size, p.size);
-        ctx.shadowBlur = 0;
-        ctx.restore();
-      }
-    };
-
-    const animate = () => {
-      if (!runningRef.current) return;
-
-      const w = window.innerWidth;
-      const h = window.innerHeight;
-      timeRef.current += 1;
-      ctx.fillStyle = BG;
-      ctx.fillRect(0, 0, w, h);
-
-      const particles = particlesRef.current;
-      for (const p of particles) {
-        p.y += p.speedY;
-        p.x +=
-          p.speedX +
-          Math.sin(timeRef.current * p.driftSpeed + p.phase) * p.drift * 0.02;
-
-        if (p.y + p.size < 0) {
-          p.y = h + p.size;
-          p.x = Math.random() * w;
-        }
-        if (p.x < -p.size) p.x = w + p.size;
-        if (p.x > w + p.size) p.x = -p.size;
-
-        ctx.save();
-        ctx.globalAlpha = p.opacity;
-        ctx.fillStyle = RED;
-        if (p.size >= 8) {
-          ctx.shadowColor = RED;
-          ctx.shadowBlur = 6;
-        } else {
-          ctx.shadowBlur = 0;
-        }
-        const rotation =
-          Math.sin(timeRef.current * p.driftSpeed * 0.5 + p.phase) * 0.3;
-        ctx.translate(p.x + p.size / 2, p.y + p.size / 2);
-        ctx.rotate(rotation);
-        ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
-        ctx.shadowBlur = 0;
-        ctx.restore();
-      }
-
-      rafRef.current = requestAnimationFrame(animate);
-    };
-
-    resize();
-
-    if (prefersReducedMotion) {
-      drawStatic(window.innerWidth, window.innerHeight);
-      return undefined;
+    const count = () => {
+      const mobile = window.innerWidth < 768
+      const lowEnd = (navigator.hardwareConcurrency ?? 4) <= 2
+      if (lowEnd) return 18
+      if (mobile) return 32
+      return 60
     }
 
-    runningRef.current = true;
-    rafRef.current = requestAnimationFrame(animate);
-
-    const onResize = () => {
-      resize();
-    };
-    window.addEventListener("resize", onResize);
-
-    const onVisibility = () => {
-      if (document.hidden) {
-        runningRef.current = false;
-        cancelAnimationFrame(rafRef.current);
-      } else {
-        runningRef.current = true;
-        rafRef.current = requestAnimationFrame(animate);
+    const makeParticle = (w: number, h: number, startY?: number): Particle => {
+      const radii = [2, 2, 3, 3, 3, 4, 4, 5, 6, 7, 8, 9, 10, 11]
+      const r = radii[Math.floor(Math.random() * radii.length)]!
+      const large = r >= 8
+      const mid = r >= 5
+      const hasTrail = Math.random() < 0.12
+      return {
+        x: Math.random() * w,
+        y: startY ?? Math.random() * h,
+        radius: r,
+        opacity: large
+          ? 0.65 + Math.random() * 0.35
+          : mid
+            ? 0.3 + Math.random() * 0.3
+            : 0.12 + Math.random() * 0.18,
+        speedY: -(0.25 + Math.random() * 0.45 + r * 0.025),
+        speedX: (Math.random() - 0.5) * 0.06,
+        phase: Math.random() * Math.PI * 2,
+        driftAmp: 0.4 + Math.random() * 1.0,
+        driftFreq: 0.008 + Math.random() * 0.012,
+        hasTrail,
+        trail: [],
+        trailMax: hasTrail ? 8 + Math.floor(Math.random() * 10) : 0,
       }
-    };
-    document.addEventListener("visibilitychange", onVisibility);
+    }
+
+    const init = (w: number, h: number) => {
+      particlesRef.current = Array.from({ length: count() }, () => makeParticle(w, h))
+    }
+
+    const resize = () => {
+      const w = window.innerWidth
+      const h = window.innerHeight
+      const dpr = Math.min(window.devicePixelRatio || 1, 2)
+      canvas.width = w * dpr
+      canvas.height = h * dpr
+      canvas.style.width = `${w}px`
+      canvas.style.height = `${h}px`
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
+      init(w, h)
+    }
+
+    const draw = () => {
+      const w = window.innerWidth
+      const h = window.innerHeight
+      ctx.fillStyle = '#0F0E11'
+      ctx.fillRect(0, 0, w, h)
+
+      state.time++
+
+      for (const p of particlesRef.current) {
+        if (p.hasTrail) {
+          p.trail.push({ x: p.x, y: p.y, opacity: p.opacity })
+          if (p.trail.length > p.trailMax) p.trail.shift()
+        }
+
+        p.y += p.speedY
+        p.x += p.speedX + Math.sin(state.time * p.driftFreq + p.phase) * p.driftAmp * 0.015
+
+        if (p.y + p.radius < 0) {
+          Object.assign(p, makeParticle(w, h, h + p.radius))
+          p.trail = []
+        }
+        if (p.x < -p.radius) p.x = w + p.radius
+        if (p.x > w + p.radius) p.x = -p.radius
+
+        if (p.hasTrail && p.trail.length > 1) {
+          for (let i = 1; i < p.trail.length; i++) {
+            const t = p.trail[i]!
+            const prev = p.trail[i - 1]!
+            const progress = i / p.trail.length
+            const trailOpacity = p.opacity * progress * 0.5
+            const trailRadius = p.radius * progress * 0.7
+
+            ctx.save()
+            ctx.globalAlpha = trailOpacity
+            ctx.fillStyle = '#C8001A'
+            ctx.beginPath()
+            ctx.arc(t.x, t.y, Math.max(trailRadius, 1), 0, Math.PI * 2)
+            ctx.fill()
+
+            if (i < p.trail.length - 1) {
+              ctx.strokeStyle = '#C8001A'
+              ctx.lineWidth = trailRadius * 1.2
+              ctx.lineCap = 'round'
+              ctx.beginPath()
+              ctx.moveTo(prev.x, prev.y)
+              ctx.lineTo(t.x, t.y)
+              ctx.stroke()
+            }
+            ctx.restore()
+          }
+        }
+
+        ctx.save()
+        ctx.globalAlpha = p.opacity
+
+        if (p.radius >= 8) {
+          ctx.shadowColor = '#E8001C'
+          ctx.shadowBlur = 10
+        }
+
+        ctx.fillStyle = '#E8001C'
+        ctx.beginPath()
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2)
+        ctx.fill()
+
+        if (p.radius >= 4) {
+          ctx.shadowBlur = 0
+          ctx.globalAlpha = p.opacity * 0.6
+          ctx.fillStyle = 'rgba(255,255,255,0.45)'
+          ctx.beginPath()
+          ctx.arc(
+            p.x - p.radius * 0.28,
+            p.y - p.radius * 0.28,
+            p.radius * 0.32,
+            0,
+            Math.PI * 2,
+          )
+          ctx.fill()
+        }
+
+        ctx.shadowBlur = 0
+        ctx.restore()
+      }
+
+      state.raf = requestAnimationFrame(draw)
+    }
+
+    resize()
+
+    if (reduced) {
+      ctx.fillStyle = '#0F0E11'
+      ctx.fillRect(0, 0, window.innerWidth, window.innerHeight)
+      for (const p of particlesRef.current) {
+        ctx.globalAlpha = p.opacity
+        ctx.fillStyle = '#E8001C'
+        ctx.beginPath()
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2)
+        ctx.fill()
+      }
+      ctx.globalAlpha = 1
+      return
+    }
+
+    state.running = true
+    state.raf = requestAnimationFrame(draw)
+
+    const onResize = () => resize()
+    const onVis = () => {
+      if (document.hidden) {
+        cancelAnimationFrame(state.raf)
+      } else {
+        state.raf = requestAnimationFrame(draw)
+      }
+    }
+    window.addEventListener('resize', onResize)
+    document.addEventListener('visibilitychange', onVis)
 
     return () => {
-      runningRef.current = false;
-      cancelAnimationFrame(rafRef.current);
-      window.removeEventListener("resize", onResize);
-      document.removeEventListener("visibilitychange", onVisibility);
-    };
-  }, []);
+      cancelAnimationFrame(state.raf)
+      window.removeEventListener('resize', onResize)
+      document.removeEventListener('visibilitychange', onVis)
+    }
+  }, [])
 
   return (
     <canvas
       ref={canvasRef}
-      className="particle-bg pointer-events-none fixed inset-0 z-0 block h-full w-full"
-      style={{ background: BG }}
       aria-hidden
+      className="pointer-events-none fixed inset-0 z-0 block"
+      style={{ background: '#0F0E11' }}
     />
-  );
+  )
 }

@@ -1,90 +1,64 @@
-"use client";
+'use client'
 
-import dynamic from "next/dynamic";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { LoadingScreen } from "@/components/LoadingScreen";
-import { Navbar } from "@/components/Navbar";
-import { ScrollProgress } from "@/components/ui/ScrollProgress";
-import { SplatCursor } from "@/components/ui/SplatCursor";
-import { WhatsAppFloat } from "@/components/WhatsAppFloat";
+import dynamic from 'next/dynamic'
+import { useState } from 'react'
+import { Footer } from '@/components/Footer'
+import { LoadingScreen } from '@/components/LoadingScreen'
+import { Navbar } from '@/components/Navbar'
+import { WhatsAppFloat } from '@/components/WhatsAppFloat'
+import { ScrollProgress } from '@/components/ui/ScrollProgress'
+import { SplatCursor } from '@/components/ui/SplatCursor'
 
-const HeroSection = dynamic(
-  () => import("@/components/HeroSection").then((m) => m.HeroSection),
-  { loading: () => <div className="min-h-[100dvh] bg-transparent" /> },
-);
+const HeroSection = dynamic(() => import('@/components/sections/HeroSection'), {
+  loading: () => <div className="min-h-[40vh]" aria-hidden />,
+})
+const ExperiencesSection = dynamic(() => import('@/components/sections/ExperiencesSection'), {
+  loading: () => <div className="min-h-[30vh]" aria-hidden />,
+})
+const ArsenalSection = dynamic(() => import('@/components/sections/ArsenalSection'), {
+  loading: () => <div className="min-h-[40vh]" aria-hidden />,
+})
+const TournamentSection = dynamic(() => import('@/components/sections/TournamentSection'), {
+  loading: () => <div className="min-h-[30vh]" aria-hidden />,
+})
+const GallerySection = dynamic(() => import('@/components/sections/GallerySection'), {
+  loading: () => <div className="min-h-[30vh]" aria-hidden />,
+})
+const TestimonialsSection = dynamic(() => import('@/components/sections/TestimonialsSection'), {
+  loading: () => <div className="min-h-[20vh]" aria-hidden />,
+})
+const FAQSection = dynamic(() => import('@/components/sections/FAQSection'), {
+  loading: () => <div className="min-h-[20vh]" aria-hidden />,
+})
+const ContactSection = dynamic(() => import('@/components/sections/ContactSection'), {
+  loading: () => <div className="min-h-[30vh]" aria-hidden />,
+})
 
-const ExperiencesSection = dynamic(
-  () =>
-    import("@/components/ExperiencesSection").then((m) => m.ExperiencesSection),
-);
-
-const ArsenalSection = dynamic(
-  () => import("@/components/ArsenalSection").then((m) => m.ArsenalSection),
-);
-
-const TournamentSection = dynamic(
-  () =>
-    import("@/components/TournamentSection").then((m) => m.TournamentSection),
-);
-
-const GallerySection = dynamic(
-  () => import("@/components/GallerySection").then((m) => m.GallerySection),
-);
-
-const TestimonialsSection = dynamic(
-  () =>
-    import("@/components/TestimonialsSection").then(
-      (m) => m.TestimonialsSection,
-    ),
-);
-
-const FAQSection = dynamic(
-  () => import("@/components/FAQSection").then((m) => m.FAQSection),
-);
-
-const ContactSection = dynamic(
-  () => import("@/components/ContactSection").then((m) => m.ContactSection),
-);
-
-const Footer = dynamic(() => import("@/components/Footer").then((m) => m.Footer));
-
-export function HomeClient() {
-  const [ready, setReady] = useState(false);
-  const doneOnce = useRef(false);
-
-  const onLoaded = useCallback(() => {
-    if (doneOnce.current) return;
-    doneOnce.current = true;
-    setReady(true);
-  }, []);
-
-  useEffect(() => {
-    return () => {
-      void import("gsap/ScrollTrigger").then((mod) => {
-        mod.ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
-        mod.ScrollTrigger.clearMatchMedia();
-      });
-    };
-  }, []);
+export default function HomeClient() {
+  const [loaded, setLoaded] = useState(false)
 
   return (
     <>
-      {!ready && <LoadingScreen onDone={onLoaded} />}
-      <ScrollProgress />
-      <SplatCursor />
-      <Navbar />
-      <main>
-        <HeroSection />
-        <ExperiencesSection />
-        <ArsenalSection />
-        <TournamentSection />
-        <GallerySection />
-        <TestimonialsSection />
-        <FAQSection />
-        <ContactSection />
-        <Footer />
-      </main>
-      <WhatsAppFloat />
+      {!loaded ? <LoadingScreen onDone={() => setLoaded(true)} /> : null}
+      {loaded ? (
+        <>
+          <ScrollProgress />
+          <Navbar />
+          <main>
+            <HeroSection />
+            <ExperiencesSection />
+            <ArsenalSection />
+            <TournamentSection />
+            <GallerySection />
+            <TestimonialsSection />
+            <FAQSection />
+            <ContactSection />
+          </main>
+          <Footer />
+          <WhatsAppFloat />
+          <SplatCursor />
+        </>
+      ) : null}
     </>
-  );
+  )
 }
