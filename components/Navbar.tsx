@@ -9,6 +9,7 @@ import { PBIcon } from '@/components/ui/PBIcon'
 import { RedButton } from '@/components/ui/RedButton'
 import { useI18n } from '@/lib/i18n'
 import { sounds } from '@/lib/sounds'
+import logo from '@/components/media/logo.png'
 
 const links = [
   { href: '/#top', key: 'nav.home', id: 'top' },
@@ -56,7 +57,14 @@ export function Navbar() {
       >
         <div className="container-pb flex h-14 items-center justify-between gap-3 px-5 md:h-16 lg:px-8">
           <Link href="/#top" className="flex min-h-[44px] items-center gap-3">
-            <Image src="/logo.png" alt="Paintball Sousse" width={36} height={36} className="h-9 w-9 object-contain" />
+            <Image
+              src={logo}
+              alt="Paintball Sousse — logo circulaire rouge et blanc"
+              width={36}
+              height={36}
+              className="h-9 w-9 rounded-full object-contain"
+              priority
+            />
             <span className="hidden font-display text-[18px] uppercase tracking-[0.08em] text-[var(--text-primary)] min-[480px]:inline">
               Paintball Sousse
             </span>

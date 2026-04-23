@@ -6,6 +6,7 @@ import { useState, type CSSProperties } from 'react'
 import { useReservationStore, stepIndex, type ReserveStep } from '@/store/reservationStore'
 import { useI18n } from '@/lib/i18n'
 import { sounds } from '@/lib/sounds'
+import logo from '@/components/media/logo.png'
 
 const widths: Record<ReserveStep, string> = {
   calendar: '25%',
@@ -130,7 +131,13 @@ export function ReserveTopBar() {
           </button>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <Image src="/logo.png" alt="" width={28} height={28} style={{ height: 28, width: 28, objectFit: 'contain' }} />
+          <Image
+            src={logo}
+            alt="Paintball Sousse"
+            width={28}
+            height={28}
+            style={{ height: 28, width: 28, objectFit: 'contain', borderRadius: '50%' }}
+          />
           <span
             className="hidden sm:inline"
             style={{
