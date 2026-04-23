@@ -51,32 +51,24 @@ export default function GallerySection() {
     <section id="gallery" className="section">
       <div className="container-pb">
         <SectionTitle label={t('gallery.label')} title={t('gallery.title')} />
-        <div className="grid grid-cols-2 gap-2 md:grid-cols-[repeat(auto-fill,minmax(280px,1fr))] md:gap-4">
+        <div className="pb-gallery__grid">
           {galleryImages.map((img, i) => (
             <motion.button
               type="button"
               key={img.id}
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-40px' }}
-              transition={{ delay: i * 0.07, duration: 0.4 }}
-              whileHover={{ scale: 1.03 }}
+              transition={{ delay: i * 0.06, duration: 0.4 }}
               onClick={() => setOpen(img.id)}
-              className="group relative overflow-hidden rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--bg-surface)] text-left"
-              style={{ aspectRatio: img.portrait ? '4 / 5' : '16 / 10' }}
+              className="pb-gallery__cell"
             >
               <Image
                 src={img.src}
                 alt={`${t('gallery.title')} ${img.id}`}
                 fill
-                className="object-cover"
-                sizes="(max-width:768px) 50vw, 33vw"
-              />
-              <motion.div
-                className="absolute inset-0 bg-[rgba(232,0,28,0.1)]"
-                initial={{ opacity: 0 }}
-                whileHover={{ opacity: 1 }}
-                transition={{ duration: 0.25 }}
+                className="pb-gallery__img object-cover"
+                sizes="(max-width: 767px) 100vw, (max-width: 1023px) 50vw, (max-width: 1279px) 34vw, 28vw"
               />
             </motion.button>
           ))}

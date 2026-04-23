@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next'
 import './globals.css'
+import logo from '@/components/media/logo.png'
 import { ParticleBackground } from '@/components/ui/ParticleBackground'
 import { Providers } from '@/components/providers'
 
@@ -20,7 +21,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Paintball Sousse',
     description: 'Ressentez l’adrénaline.',
-    images: ['/logo.png'],
+    images: [{ url: logo.src, width: logo.width, height: logo.height, alt: 'Paintball Sousse' }],
   },
   manifest: '/manifest.json',
 }
