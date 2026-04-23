@@ -6,7 +6,7 @@ Stack : **Next.js 14** (App Router), **React 18**, **TypeScript**, **Tailwind CS
 
 ## Prérequis
 
-- **Node.js** 18 ou supérieur (recommandé : LTS actuelle)
+- **Node.js** 20 (voir `.nvmrc` ; 18+ reste compatible)
 - **npm** (ou équivalent)
 
 ## Installation
@@ -19,7 +19,7 @@ npm install
 
 | Commande    | Description                          |
 | ----------- | ------------------------------------ |
-| `npm run dev`   | Serveur de développement ([localhost:3000](http://localhost:3000)) |
+| `npm run dev`   | Serveur de développement (port **3000** par défaut) |
 | `npm run build` | Build de production                  |
 | `npm run start` | Lance l’app après un build           |
 | `npm run lint`  | ESLint (config Next.js)              |
@@ -51,6 +51,10 @@ Les textes traduits se trouvent notamment dans `lib/i18n-messages.ts`.
 ## Métadonnées et déploiement
 
 L’URL de base des métadonnées est définie dans `app/layout.tsx` (`metadataBase`). À adapter sur le domaine de production (ex. `https://paintballsousse.tn`) pour les liens Open Graph absolus.
+
+### Netlify
+
+Fichiers à la racine : `netlify.toml` (build `npm run build`, dossier de publication `.next`, plugin `@netlify/plugin-nextjs` installé par Netlify au build). Pas de redirection SPA `/* → /index.html` : elle est réservée aux sites statiques mono-fichier et **casse** le runtime Next.js.
 
 ## Licence
 
