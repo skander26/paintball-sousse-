@@ -108,7 +108,7 @@ export default function HeroSection() {
             style={{ filter: 'drop-shadow(0 0 60px rgba(232,0,28,0.4))' }}
           >
             <Image
-              src="/hero-character.png"
+              src="/hero-character.webp"
               alt="Personnage paintball"
               width={720}
               height={900}

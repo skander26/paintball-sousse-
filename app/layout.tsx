@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from 'next'
 import './globals.css'
-import logo from '@/components/media/logo.png'
+import logo from '@/components/media/logo.webp'
 import { ParticleBackground } from '@/components/ui/ParticleBackground'
 import { Providers } from '@/components/providers'
 

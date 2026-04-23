@@ -32,8 +32,8 @@ Les fichiers générés (ex. `public/sw.js`) peuvent être régénérés au buil
 
 ## Contenu et médias
 
-- **Logo** : fichier principal `components/media/logo.png`, importé dans la barre de navigation et la barre de réservation. Une copie `public/logo.png` est utilisée par le manifeste PWA (`public/manifest.json`) — à resynchroniser si le logo change.
-- **Galerie** : images servies depuis `public/gallery/photo-{n}.jpg`. La liste des photos et le format portrait / paysage sont définis dans `data/gallery.ts`. Tu peux garder une copie source dans le dossier `gallery/` à la racine puis copier vers `public/gallery/` pour le déploiement.
+- **Logo** : fichier principal `components/media/logo.webp`, importé dans la barre de navigation et la barre de réservation. Une copie `public/logo.webp` est utilisée par le manifeste PWA (`public/manifest.json`) — à resynchroniser si le logo change.
+- **Galerie** : images servies depuis `public/gallery/photo-{n}.webp`. La liste des photos et le format portrait / paysage sont définis dans `data/gallery.ts`. Tu peux garder une copie source dans le dossier `gallery/` à la racine puis copier vers `public/gallery/` pour le déploiement.
 
 ## Structure utile (aperçu)
 

@@ -9,7 +9,7 @@ import { PBIcon } from '@/components/ui/PBIcon'
 import { RedButton } from '@/components/ui/RedButton'
 import { useI18n } from '@/lib/i18n'
 import { sounds } from '@/lib/sounds'
-import logo from '@/components/media/logo.png'
+import logo from '@/components/media/logo.webp'
 
 const links = [
   { href: '/#top', key: 'nav.home', id: 'top' },

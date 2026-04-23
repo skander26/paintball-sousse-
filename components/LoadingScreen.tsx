@@ -76,7 +76,7 @@ export function LoadingScreen({ onDone }: { onDone: () => void }) {
             }}
           >
             <img
-              src="/loading-gun.png"
+              src="/loading-gun.webp"
               alt=""
               style={{
                 width: '100%',
@@ -92,7 +92,7 @@ export function LoadingScreen({ onDone }: { onDone: () => void }) {
               draggable={false}
             />
             <img
-              src="/loading-gun.png"
+              src="/loading-gun.webp"
               alt=""
               style={{
                 width: '100%',

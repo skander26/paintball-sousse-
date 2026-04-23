@@ -2,7 +2,7 @@
 const photoIds = [1, 2, 3, 4, 5, 6] as const
 
 export const galleryImages = photoIds.map((id) => ({
-  src: `/gallery/photo-${id}.jpg`,
+  src: `/gallery/photo-${id}.webp`,
   id,
   portrait: id % 3 === 0,
 }))

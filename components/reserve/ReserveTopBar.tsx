@@ -6,7 +6,7 @@ import { useState, type CSSProperties } from 'react'
 import { useReservationStore, stepIndex, type ReserveStep } from '@/store/reservationStore'
 import { useI18n } from '@/lib/i18n'
 import { sounds } from '@/lib/sounds'
-import logo from '@/components/media/logo.png'
+import logo from '@/components/media/logo.webp'
 
 const widths: Record<ReserveStep, string> = {
   calendar: '25%',
