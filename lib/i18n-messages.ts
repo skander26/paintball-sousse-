@@ -5,6 +5,7 @@ type Dict = Record<string, string>
 const fr: Dict = {
   'nav.home': 'Accueil',
   'nav.exp': 'Expériences',
+  'nav.teambuild': 'Team building',
   'nav.arsenal': 'Arsenal',
   'nav.tournament': 'Tournoi',
   'nav.gallery': 'Galerie',
@@ -215,6 +216,7 @@ const en: Dict = {
   ...fr,
   'nav.home': 'Home',
   'nav.exp': 'Experiences',
+  'nav.teambuild': 'Team building',
   'nav.arsenal': 'Arsenal',
   'nav.tournament': 'Tournament',
   'nav.gallery': 'Gallery',
@@ -423,6 +425,7 @@ const ar: Dict = {
   ...en,
   'nav.home': 'الرئيسية',
   'nav.exp': 'التجارب',
+  'nav.teambuild': 'بناء الفريق',
   'nav.arsenal': 'التسليح',
   'nav.tournament': 'البطولة',
   'nav.gallery': 'المعرض',

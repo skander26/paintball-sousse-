@@ -3,6 +3,7 @@
 import { AnimatePresence, motion, useMotionValueEvent, useScroll } from 'framer-motion'
 import Image from 'next/image'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { LanguageSwitcher } from '@/components/ui/LanguageSwitcher'
 import { PBIcon } from '@/components/ui/PBIcon'
@@ -11,17 +12,24 @@ import { useI18n } from '@/lib/i18n'
 import { sounds } from '@/lib/sounds'
 import logo from '@/components/media/logo.webp'
 
-const links = [
-  { href: '/#top', key: 'nav.home', id: 'top' },
-  { href: '/#experiences', key: 'nav.exp', id: 'experiences' },
-  { href: '/#arsenal', key: 'nav.arsenal', id: 'arsenal' },
-  { href: '/#tournament', key: 'nav.tournament', id: 'tournament' },
-  { href: '/#gallery', key: 'nav.gallery', id: 'gallery' },
-  { href: '/#contact', key: 'nav.contact', id: 'contact' },
+const links: {
+  href: string
+  key: string
+  id: string
+  match: 'hash' | 'path'
+}[] = [
+  { href: '/#top', key: 'nav.home', id: 'top', match: 'hash' },
+  { href: '/#experiences', key: 'nav.exp', id: 'experiences', match: 'hash' },
+  { href: '/team-building', key: 'nav.teambuild', id: 'teambuild', match: 'path' },
+  { href: '/#arsenal', key: 'nav.arsenal', id: 'arsenal', match: 'hash' },
+  { href: '/#tournament', key: 'nav.tournament', id: 'tournament', match: 'hash' },
+  { href: '/#gallery', key: 'nav.gallery', id: 'gallery', match: 'hash' },
+  { href: '/#contact', key: 'nav.contact', id: 'contact', match: 'hash' },
 ]
 
 export function Navbar() {
   const { t } = useI18n()
+  const pathname = usePathname()
   const { scrollY } = useScroll()
   const [scrolled, setScrolled] = useState(false)
   const [open, setOpen] = useState(false)
@@ -32,6 +40,9 @@ export function Navbar() {
   })
 
   useEffect(() => {
+    if (pathname !== '/') {
+      return
+    }
     const ids = ['top', 'experiences', 'arsenal', 'tournament', 'gallery', 'contact']
     const els = ids.map((id) => document.getElementById(id)).filter(Boolean) as HTMLElement[]
     const obs = new IntersectionObserver(
@@ -45,7 +56,7 @@ export function Navbar() {
     )
     els.forEach((el) => obs.observe(el))
     return () => obs.disconnect()
-  }, [])
+  }, [pathname])
 
   const barBg = scrolled ? 'bg-[var(--bg-overlay)]' : 'bg-transparent'
   const barBorder = scrolled ? 'border-b border-[var(--border)]' : 'border-b border-transparent'
@@ -72,13 +83,14 @@ export function Navbar() {
 
           <nav className="hidden items-center gap-8 lg:flex">
             {links.map((l) => {
-              const id = l.href.split('#')[1] ?? 'top'
-              const isActive = active === id
+              const id = l.match === 'hash' ? l.href.split('#')[1] ?? 'top' : l.id
+              const isActive =
+                l.match === 'path' ? pathname === l.href : pathname === '/' && active === id
               return (
                 <Link
                   key={l.key}
                   href={l.href}
-                  className={`group relative pb-1 font-body text-[14px] font-semibold transition-colors hover:text-[var(--text-primary)] ${
+                  className={`group relative inline-flex min-h-[44px] items-center pb-1 font-body text-[14px] font-semibold transition-colors hover:text-[var(--text-primary)] ${
                     isActive ? 'text-[var(--red)]' : 'text-[var(--text-secondary)]'
                   }`}
                 >

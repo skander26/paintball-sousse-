@@ -15,6 +15,9 @@ const HeroSection = dynamic(() => import('@/components/sections/HeroSection'), {
 const ExperiencesSection = dynamic(() => import('@/components/sections/ExperiencesSection'), {
   loading: () => <div className="min-h-[30vh]" aria-hidden />,
 })
+const TeamBuildingTeaser = dynamic(() => import('@/components/sections/TeamBuildingTeaser'), {
+  loading: () => <div className="min-h-[24vh]" aria-hidden />,
+})
 const ArsenalSection = dynamic(() => import('@/components/sections/ArsenalSection'), {
   loading: () => <div className="min-h-[40vh]" aria-hidden />,
 })
@@ -47,6 +50,7 @@ export default function HomeClient() {
           <main>
             <HeroSection />
             <ExperiencesSection />
+            <TeamBuildingTeaser />
             <ArsenalSection />
             <TournamentSection />
             <GallerySection />
