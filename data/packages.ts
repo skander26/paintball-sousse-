@@ -1,3 +1,5 @@
+import type { IconKey } from '@/icons'
+
 export type Tier = 'recruit' | 'soldier' | 'warrior' | 'elite' | 'commander'
 
 export const tierColors: Record<Tier, string> = {
@@ -35,30 +37,67 @@ export const packages = [
   { balls: 250, duration: '2h', minutes: 120, price: 100, tier: 'commander' as const },
 ]
 
-export const gameModes = [
+export type GameModeId = 'ctf' | 'deathmatch' | 'aliens' | 'ludo' | 'free-for-all'
+
+export type GameModeDef = {
+  id: GameModeId
+  icon: IconKey
+  nameKey: string
+  descKey: string
+  subdescKey?: string
+  teamBased: boolean
+  minPlayers: number
+  maxPlayers: number
+  isNew?: boolean
+}
+
+export const gameModes: GameModeDef[] = [
   {
     id: 'ctf',
-    icon: 'flag' as const,
+    icon: 'flag',
     nameKey: 'arsenal.mode.ctf.name',
     descKey: 'arsenal.mode.ctf.desc',
+    teamBased: true,
+    minPlayers: 4,
+    maxPlayers: 20,
   },
   {
     id: 'deathmatch',
-    icon: 'skull' as const,
+    icon: 'skull',
     nameKey: 'arsenal.mode.deathmatch.name',
     descKey: 'arsenal.mode.deathmatch.desc',
+    teamBased: true,
+    minPlayers: 4,
+    maxPlayers: 20,
   },
   {
     id: 'aliens',
-    icon: 'alien' as const,
+    icon: 'alien',
     nameKey: 'arsenal.mode.aliens.name',
     descKey: 'arsenal.mode.aliens.desc',
+    teamBased: true,
+    minPlayers: 4,
+    maxPlayers: 20,
   },
   {
     id: 'ludo',
-    icon: 'dice' as const,
+    icon: 'dice',
     nameKey: 'arsenal.mode.ludo.name',
     descKey: 'arsenal.mode.ludo.desc',
+    teamBased: true,
+    minPlayers: 4,
+    maxPlayers: 20,
+  },
+  {
+    id: 'free-for-all',
+    icon: 'swords',
+    nameKey: 'arsenal.mode.ffa.name',
+    descKey: 'arsenal.mode.ffa.desc',
+    subdescKey: 'arsenal.mode.ffa.subdesc',
+    teamBased: false,
+    minPlayers: 3,
+    maxPlayers: 20,
+    isNew: true,
   },
 ]
 

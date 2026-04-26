@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import { gameModes } from '@/data/packages'
+import { isFreeForAll } from '@/lib/gameModeConfig'
 import { getClassOption, useReservationStore } from '@/store/reservationStore'
 import { RedButton } from '@/components/ui/RedButton'
 import { ADDRESS_LINES, PHONE_DISPLAY, whatsappHref } from '@/lib/constants'
@@ -47,16 +48,26 @@ export function StepSuccess() {
   }, [date, locale])
 
   const waMsg = useMemo(() => {
-    const lines = [
-      `Paintball Sousse — Réservation`,
-      `Date: ${formattedDate}`,
-      `Heure: ${timeSlot}`,
-      `Joueurs: ${players.length}`,
-      `Mode: ${modeLabel}`,
-      `Total: ${total} DT`,
-    ]
+    const ffa = isFreeForAll(gameMode)
+    const lines = ffa
+      ? [
+          `Paintball Sousse — Réservation`,
+          `🎯 ${modeLabel}`,
+          `👥 ${players.length} guerriers — pas d'équipes`,
+          `Date: ${formattedDate}`,
+          `Heure: ${timeSlot}`,
+          `Total: ${total} DT`,
+        ]
+      : [
+          `Paintball Sousse — Réservation`,
+          `Date: ${formattedDate}`,
+          `Heure: ${timeSlot}`,
+          `Joueurs: ${players.length}`,
+          `Mode: ${modeLabel}`,
+          `Total: ${total} DT`,
+        ]
     return lines.join('\n')
-  }, [formattedDate, timeSlot, players.length, modeLabel, total])
+  }, [formattedDate, timeSlot, players.length, modeLabel, total, gameMode])
 
   const confetti = useMemo(
     () =>

@@ -78,6 +78,7 @@ const cardShell = {
 export function StepCalendar() {
   const { t, locale } = useI18n()
   const setStep = useReservationStore((s) => s.setStep)
+  const setSquadPhase = useReservationStore((s) => s.setSquadPhase)
   const setDate = useReservationStore((s) => s.setDate)
   const setTimeSlot = useReservationStore((s) => s.setTimeSlot)
   const date = useReservationStore((s) => s.date)
@@ -209,6 +210,7 @@ export function StepCalendar() {
 
   const handleProceed = () => {
     sounds.confirm()
+    setSquadPhase('mode')
     setStep('squad', 1)
   }
 

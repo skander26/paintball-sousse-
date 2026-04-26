@@ -37,15 +37,17 @@ export function CharacterCarousel({ classIndex, setClassIndex, currentTeam }: Ch
     const dist = Math.abs(offset)
     const active = offset === 0
 
-    const rankMul =
-      (1 + i * 0.05) *
-      (currentTeam === 'red' && paintballClasses[i]?.id === 'warrior' ? 1.25 : 1)
+    /** Même échelle sur mobile/tablette ; variations décoratives seulement au desktop. */
+    const rankMul = isDesktopLayout
+      ? (1 + i * 0.05) *
+        (currentTeam === 'red' && paintballClasses[i]?.id === 'warrior' ? 1.25 : 1)
+      : 1
 
     const scale = active
-      ? (isDesktopLayout ? 1.08 : 1.04) * rankMul
+      ? (isDesktopLayout ? 1.08 : 1.02) * rankMul
       : isDesktopLayout
         ? 0.56
-        : 0.5
+        : 0.52
 
     const opacity = active ? 1 : 0.72
     const step = isDesktopLayout ? 168 : 56
@@ -64,7 +66,7 @@ export function CharacterCarousel({ classIndex, setClassIndex, currentTeam }: Ch
         <div
           className={[
             'relative mx-auto w-full min-w-0 max-w-full overflow-x-visible overflow-y-visible pt-4 sm:pt-6',
-            'h-[min(380px,48dvh)] max-h-[56dvh] sm:h-[min(440px,54dvh)] sm:max-h-[62dvh]',
+            'h-[min(460px,56dvh)] max-h-[62dvh] sm:h-[min(500px,58dvh)] sm:max-h-[66dvh]',
             'px-4 sm:px-8',
             'lg:h-[min(720px,calc(100dvh-6.5rem))] lg:max-h-[min(720px,calc(100dvh-6.5rem))] lg:px-14 lg:pt-2',
           ].join(' ')}
@@ -114,33 +116,20 @@ export function CharacterCarousel({ classIndex, setClassIndex, currentTeam }: Ch
                 }}
               >
                 <div
-                  className={
-                    c.id === 'commander'
-                      ? 'relative flex w-full max-w-[min(100%,72vw)] flex-col items-center overflow-visible sm:max-w-[min(100%,22rem)] lg:max-w-[min(100%,36rem)]'
-                      : 'relative flex w-full max-w-[min(100%,80vw)] flex-col items-center overflow-visible sm:max-w-[min(100%,24rem)] lg:max-w-[min(100%,36rem)]'
-                  }
+                  className="relative flex w-full max-w-[min(100%,82vw)] flex-col items-center overflow-visible sm:max-w-[min(100%,26rem)] lg:max-w-[min(100%,40rem)]"
                   style={{
                     background: `radial-gradient(ellipse 80% 32% at 50% 100%, ${c.platformColor} 0%, transparent 72%)`,
                   }}
                 >
                   <div className="relative box-border w-full overflow-visible pt-2 pb-1 sm:pt-3 sm:pb-2 lg:pt-4 lg:pb-3">
-                    <div
-                      className={
-                        c.id === 'commander'
-                          ? 'relative mx-auto h-[min(200px,28dvh)] w-full max-w-[min(100%,70vw)] sm:h-[min(260px,36dvh)] sm:max-w-full lg:h-[min(640px,calc(100dvh-7.5rem))]'
-                          : 'relative mx-auto h-[min(280px,38dvh)] w-full max-w-full sm:h-[min(340px,46dvh)] lg:h-[min(640px,calc(100dvh-7.5rem))]'
-                      }
-                    >
+                    {/** Cadre identique toutes classes : mobile = largeur + ratio fixe ; lg = hauteur max comme avant. */}
+                    <div className="relative mx-auto aspect-[3/4] w-[min(78vw,320px)] max-w-full sm:w-[min(76vw,340px)] lg:aspect-auto lg:h-[min(700px,calc(100dvh-7rem))] lg:w-full lg:max-w-[min(100%,40rem)]">
                       <Image
                         src={reserveCharacterImage(currentTeam, c.id)}
                         alt=""
                         fill
                         className="object-contain object-bottom"
-                        sizes={
-                          c.id === 'commander'
-                            ? '(max-width: 640px) 70vw, (max-width: 1023px) 22rem, 36rem'
-                            : '(max-width: 640px) 80vw, (max-width: 1023px) 24rem, 36rem'
-                        }
+                        sizes="(max-width: 640px) 320px, (max-width: 1023px) 340px, 40rem"
                         priority
                       />
                     </div>

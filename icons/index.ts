@@ -20,6 +20,7 @@ export const ICONS = {
   skull: 'game-icons:death-zone',
   alien: 'game-icons:alien-skull',
   dice: 'game-icons:ludo',
+  swords: 'game-icons:crossed-swords',
   team: 'game-icons:team-idea',
   timer: 'solar:clock-circle-bold',
   price: 'solar:tag-price-bold',

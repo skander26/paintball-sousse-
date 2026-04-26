@@ -1,15 +1,16 @@
 'use client'
 
 import { motion } from 'framer-motion'
+import { PBIcon } from '@/components/ui/PBIcon'
 import { useReservationStore } from '@/store/reservationStore'
+import { getGameModeRules, isFreeForAll } from '@/lib/gameModeConfig'
 import { useI18n } from '@/lib/i18n'
 import { sounds } from '@/lib/sounds'
 
-const MIN = 6
-const MAX = 20
 const RED = '#E8001C'
 const BLUE = '#4D8EFF'
 const EMPTY = '#252530'
+const FFA_COLORS = [RED, '#f97316', '#eab308']
 
 function SoldierIcon({ color }: { color: string }) {
   return (
@@ -31,8 +32,14 @@ function SoldierIcon({ color }: { color: string }) {
 export function SquadSizeSelector() {
   const { t } = useI18n()
   const squadSize = useReservationStore((s) => s.squadSize)
+  const gameMode = useReservationStore((s) => s.gameMode)
   const setSquadSize = useReservationStore((s) => s.setSquadSize)
   const setSquadPhase = useReservationStore((s) => s.setSquadPhase)
+
+  const rules = getGameModeRules(gameMode)
+  const ffa = isFreeForAll(gameMode)
+  const MIN = rules.minPlayers
+  const MAX = rules.maxPlayers
 
   const redCount = Math.ceil(squadSize / 2)
   const blueCount = Math.floor(squadSize / 2)
@@ -51,8 +58,14 @@ export function SquadSizeSelector() {
 
   const lockIn = () => {
     sounds.confirm()
-    setSquadPhase('mode')
+    setSquadPhase('character')
   }
+
+  const sizeSub = ffa
+    ? t('reserve.squad.ffaSizeSub')
+        .replace('{{min}}', String(MIN))
+        .replace('{{max}}', String(MAX))
+    : t('reserve.squad.sizeSubTeam').replace('{{min}}', String(MIN)).replace('{{max}}', String(MAX))
 
   return (
     <div
@@ -82,7 +95,7 @@ export function SquadSizeSelector() {
             margin: 0,
           }}
         >
-          {t('reserve.squad.sizeTitle')}
+          {ffa ? t('reserve.squad.ffaSizeTitle') : t('reserve.squad.sizeTitle')}
         </h1>
         <p
           style={{
@@ -93,7 +106,7 @@ export function SquadSizeSelector() {
             letterSpacing: '0.05em',
           }}
         >
-          {t('reserve.squad.sizeSub')}
+          {sizeSub}
         </p>
       </div>
 
@@ -171,130 +184,187 @@ export function SquadSizeSelector() {
         </button>
       </div>
 
-      <div
-        style={{
-          fontFamily: 'var(--font-body), Rajdhani, sans-serif',
-          fontSize: 'clamp(14px, 2vw, 18px)',
-          fontWeight: 600,
-          color: '#A09AAD',
-          letterSpacing: '0.08em',
-        }}
-      >
-        ={' '}
-        <span style={{ color: RED }}>
-          {redCount} {t('reserve.squad.teamRedName')}
-        </span>
-        {' + '}
-        <span style={{ color: BLUE }}>
-          {blueCount} {t('reserve.squad.teamBlueName')}
-        </span>
-      </div>
+      {!ffa ? (
+        <>
+          <div
+            style={{
+              fontFamily: 'var(--font-body), Rajdhani, sans-serif',
+              fontSize: 'clamp(14px, 2vw, 18px)',
+              fontWeight: 600,
+              color: '#A09AAD',
+              letterSpacing: '0.08em',
+            }}
+          >
+            ={' '}
+            <span style={{ color: RED }}>
+              {redCount} {t('reserve.squad.teamRedName')}
+            </span>
+            {' + '}
+            <span style={{ color: BLUE }}>
+              {blueCount} {t('reserve.squad.teamBlueName')}
+            </span>
+          </div>
 
-      <div
-        className="max-[380px]:gap-1"
-        style={{
-          display: 'flex',
-          flexWrap: 'wrap',
-          justifyContent: 'center',
-          gap: '6px',
-          maxWidth: '540px',
-          margin: '0 auto',
-        }}
-      >
-        {Array.from({ length: 20 }, (_, i) => {
-          const color = i < redCount ? RED : i < squadSize ? BLUE : EMPTY
-          return (
-            <motion.div
-              key={i}
-              animate={{
-                opacity: i < squadSize ? 1 : 0.3,
-                scale: i < squadSize ? 1 : 0.85,
+          <div
+            className="max-[380px]:gap-1"
+            style={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              justifyContent: 'center',
+              gap: '6px',
+              maxWidth: '540px',
+              margin: '0 auto',
+            }}
+          >
+            {Array.from({ length: 20 }, (_, i) => {
+              const color = i < redCount ? RED : i < squadSize ? BLUE : EMPTY
+              return (
+                <motion.div
+                  key={i}
+                  animate={{
+                    opacity: i < squadSize ? 1 : 0.3,
+                    scale: i < squadSize ? 1 : 0.85,
+                  }}
+                  transition={{ duration: 0.2, delay: i * 0.02 }}
+                >
+                  <SoldierIcon color={color} />
+                </motion.div>
+              )
+            })}
+          </div>
+
+          <div className="grid w-full max-w-[620px] grid-cols-1 gap-[clamp(12px,2vw,20px)] min-[381px]:grid-cols-2">
+            <div
+              style={{
+                background: 'rgba(18, 17, 22, 0.90)',
+                backdropFilter: 'blur(16px)',
+                WebkitBackdropFilter: 'blur(16px)',
+                border: '1px solid rgba(255,255,255,0.08)',
+                borderLeft: `3px solid ${RED}`,
+                borderRadius: '12px',
+                padding: 'clamp(16px, 2.5vw, 24px)',
+                textAlign: 'left',
               }}
-              transition={{ duration: 0.2, delay: i * 0.02 }}
             >
-              <SoldierIcon color={color} />
-            </motion.div>
-          )
-        })}
-      </div>
+              <div
+                style={{
+                  fontFamily: 'var(--font-body), Rajdhani, sans-serif',
+                  fontSize: '12px',
+                  fontWeight: 700,
+                  letterSpacing: '0.2em',
+                  color: RED,
+                  marginBottom: '8px',
+                  textTransform: 'uppercase',
+                }}
+              >
+                {t('reserve.squad.teamRedName')}
+              </div>
+              <div
+                style={{
+                  fontFamily: 'var(--font-display), "Bebas Neue", sans-serif',
+                  fontSize: 'clamp(24px, 4vw, 36px)',
+                  color: '#F2F0F5',
+                  letterSpacing: '0.04em',
+                }}
+              >
+                {t('reserve.squad.playersFmt').replace('{{n}}', String(redCount))}
+              </div>
+            </div>
 
-      <div
-        className="grid w-full max-w-[620px] grid-cols-1 gap-[clamp(12px,2vw,20px)] min-[381px]:grid-cols-2"
-      >
-        <div
-          style={{
-            background: 'rgba(18, 17, 22, 0.90)',
-            backdropFilter: 'blur(16px)',
-            WebkitBackdropFilter: 'blur(16px)',
-            border: '1px solid rgba(255,255,255,0.08)',
-            borderLeft: `3px solid ${RED}`,
-            borderRadius: '12px',
-            padding: 'clamp(16px, 2.5vw, 24px)',
-            textAlign: 'left',
-          }}
-        >
+            <div
+              style={{
+                background: 'rgba(18, 17, 22, 0.90)',
+                backdropFilter: 'blur(16px)',
+                WebkitBackdropFilter: 'blur(16px)',
+                border: '1px solid rgba(255,255,255,0.08)',
+                borderLeft: `3px solid ${BLUE}`,
+                borderRadius: '12px',
+                padding: 'clamp(16px, 2.5vw, 24px)',
+                textAlign: 'left',
+              }}
+            >
+              <div
+                style={{
+                  fontFamily: 'var(--font-body), Rajdhani, sans-serif',
+                  fontSize: '12px',
+                  fontWeight: 700,
+                  letterSpacing: '0.2em',
+                  color: BLUE,
+                  marginBottom: '8px',
+                  textTransform: 'uppercase',
+                }}
+              >
+                {t('reserve.squad.teamBlueName')}
+              </div>
+              <div
+                style={{
+                  fontFamily: 'var(--font-display), "Bebas Neue", sans-serif',
+                  fontSize: 'clamp(24px, 4vw, 36px)',
+                  color: '#F2F0F5',
+                  letterSpacing: '0.04em',
+                }}
+              >
+                {t('reserve.squad.playersFmt').replace('{{n}}', String(blueCount))}
+              </div>
+            </div>
+          </div>
+        </>
+      ) : (
+        <>
           <div
+            className="max-[380px]:gap-1"
             style={{
-              fontFamily: 'var(--font-body), Rajdhani, sans-serif',
-              fontSize: '12px',
-              fontWeight: 700,
-              letterSpacing: '0.2em',
-              color: RED,
-              marginBottom: '8px',
-              textTransform: 'uppercase',
+              display: 'flex',
+              flexWrap: 'wrap',
+              justifyContent: 'center',
+              gap: '6px',
+              maxWidth: '540px',
+              margin: '0 auto',
             }}
           >
-            {t('reserve.squad.teamRedName')}
+            {Array.from({ length: 20 }, (_, i) => {
+              const color = i < squadSize ? FFA_COLORS[i % FFA_COLORS.length]! : EMPTY
+              return (
+                <motion.div
+                  key={i}
+                  animate={{
+                    opacity: i < squadSize ? 1 : 0.3,
+                    scale: i < squadSize ? 1 : 0.85,
+                  }}
+                  transition={{ duration: 0.2, delay: i * 0.02 }}
+                >
+                  <SoldierIcon color={color} />
+                </motion.div>
+              )
+            })}
           </div>
-          <div
-            style={{
-              fontFamily: 'var(--font-display), "Bebas Neue", sans-serif',
-              fontSize: 'clamp(24px, 4vw, 36px)',
-              color: '#F2F0F5',
-              letterSpacing: '0.04em',
-            }}
-          >
-            {t('reserve.squad.playersFmt').replace('{{n}}', String(redCount))}
-          </div>
-        </div>
 
-        <div
-          style={{
-            background: 'rgba(18, 17, 22, 0.90)',
-            backdropFilter: 'blur(16px)',
-            WebkitBackdropFilter: 'blur(16px)',
-            border: '1px solid rgba(255,255,255,0.08)',
-            borderLeft: `3px solid ${BLUE}`,
-            borderRadius: '12px',
-            padding: 'clamp(16px, 2.5vw, 24px)',
-            textAlign: 'left',
-          }}
-        >
           <div
+            className="w-full max-w-[620px] rounded-xl border p-6 text-left"
             style={{
-              fontFamily: 'var(--font-body), Rajdhani, sans-serif',
-              fontSize: '12px',
-              fontWeight: 700,
-              letterSpacing: '0.2em',
-              color: BLUE,
-              marginBottom: '8px',
-              textTransform: 'uppercase',
+              borderColor: 'rgba(232,0,28,0.45)',
+              background: 'rgba(18, 17, 22, 0.92)',
             }}
           >
-            {t('reserve.squad.teamBlueName')}
+            <div className="flex items-start gap-3">
+              <PBIcon name="swords" className="mt-0.5 shrink-0 text-[40px] text-[#E8001C]" />
+              <div>
+                <div
+                  className="font-display text-[clamp(22px,4vw,28px)] uppercase leading-tight tracking-[0.04em] text-white"
+                >
+                  {t('reserve.squad.ffaArenaTitle')}
+                </div>
+                <div className="mt-2 font-display text-[clamp(18px,3.5vw,22px)] uppercase tracking-[0.06em] text-[#E8001C]">
+                  {t('reserve.squad.ffaArenaLine1').replace('{{n}}', String(squadSize))}
+                </div>
+                <div className="mt-1 font-display text-[clamp(16px,3vw,20px)] uppercase tracking-[0.08em] text-[#A09AAD]">
+                  {t('reserve.squad.ffaArenaLine2')}
+                </div>
+              </div>
+            </div>
           </div>
-          <div
-            style={{
-              fontFamily: 'var(--font-display), "Bebas Neue", sans-serif',
-              fontSize: 'clamp(24px, 4vw, 36px)',
-              color: '#F2F0F5',
-              letterSpacing: '0.04em',
-            }}
-          >
-            {t('reserve.squad.playersFmt').replace('{{n}}', String(blueCount))}
-          </div>
-        </div>
-      </div>
+        </>
+      )}
 
       <motion.button
         type="button"
@@ -316,7 +386,7 @@ export function SquadSizeSelector() {
           transition: 'all 0.2s',
         }}
       >
-        {t('reserve.squad.lockSize')}
+        {ffa ? t('reserve.squad.enterArena') : t('reserve.squad.lockSize')}
       </motion.button>
     </div>
   )
